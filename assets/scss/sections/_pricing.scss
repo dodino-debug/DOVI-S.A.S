@@ -1,0 +1,158 @@
+// main: ../main.scss
+/*--------------------------------------------------------------
+# Pricing Section
+--------------------------------------------------------------*/
+.pricing {
+  .pricing-item {
+    padding: 40px;
+    background-color: var(--surface-color);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    height: 100%;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .pricing-icon {
+      width: 56px;
+      height: 56px;
+      background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+
+      i {
+        font-size: 24px;
+        color: var(--accent-color);
+      }
+    }
+
+    h3 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .price {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 16px;
+
+      .currency {
+        font-size: 24px;
+        font-weight: 500;
+        vertical-align: super;
+      }
+
+      .period {
+        font-size: 16px;
+        color: color-mix(in srgb, var(--default-color), transparent 40%);
+        font-weight: 400;
+      }
+    }
+
+    .description {
+      font-size: 16px;
+      color: color-mix(in srgb, var(--default-color), transparent 30%);
+      margin-bottom: 32px;
+    }
+
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 32px;
+
+      li {
+        padding: 12px 0;
+        color: color-mix(in srgb, var(--default-color), transparent 20%);
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+
+        i {
+          color: var(--accent-color);
+          font-size: 18px;
+        }
+      }
+    }
+
+    .btn-pricing {
+      display: inline-block;
+      padding: 12px 32px;
+      background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+      color: var(--accent-color);
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: var(--accent-color);
+        color: var(--contrast-color);
+      }
+    }
+
+    &.featured {
+      border: 2px solid color-mix(in srgb, var(--accent-color), transparent 80%);
+      background: linear-gradient(to bottom right,
+          color-mix(in srgb, var(--accent-color), transparent 97%),
+          var(--surface-color));
+
+      .pricing-badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--accent-color);
+        color: var(--contrast-color);
+        padding: 6px 20px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .btn-pricing {
+        background-color: var(--accent-color);
+        color: var(--contrast-color);
+
+        &:hover {
+          background-color: color-mix(in srgb, var(--accent-color), transparent 20%);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pricing-item {
+      padding: 30px 20px;
+
+      .price {
+        font-size: 40px;
+
+        .currency {
+          font-size: 20px;
+        }
+
+        .period {
+          font-size: 14px;
+        }
+      }
+
+      .features-list li {
+        font-size: 14px;
+      }
+
+      .btn-pricing {
+        padding: 10px 24px;
+        font-size: 14px;
+      }
+    }
+  }
+}

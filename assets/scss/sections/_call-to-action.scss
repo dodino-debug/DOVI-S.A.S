@@ -1,0 +1,146 @@
+// main: ../main.scss
+/*--------------------------------------------------------------
+# Call To Action Section
+--------------------------------------------------------------*/
+.call-to-action {
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-content {
+    padding-right: 20px;
+
+    @media (max-width: 992px) {
+      padding-right: 0;
+      margin-bottom: 50px;
+    }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color), #6c5ce7 50%) 100%);
+    color: var(--contrast-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 15px color-mix(in srgb, var(--accent-color), transparent 70%);
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 20px 0;
+    line-height: 1.3;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  .lead {
+    font-size: 1.1rem;
+    color: color-mix(in srgb, var(--default-color), transparent 30%);
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+
+  .features-list {
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+
+      i {
+        color: #22c55e;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      span {
+        font-weight: 500;
+        color: var(--default-color);
+      }
+    }
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 30px;
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+
+      &.btn-primary {
+        background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color), #6c5ce7 50%) 100%);
+        color: var(--contrast-color);
+        box-shadow: 0 6px 20px color-mix(in srgb, var(--accent-color), transparent 60%);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px color-mix(in srgb, var(--accent-color), transparent 50%);
+        }
+      }
+
+      &.btn-outline {
+        background: var(--surface-color);
+        color: var(--default-color);
+        border-color: color-mix(in srgb, var(--default-color), transparent 80%);
+
+        &:hover {
+          background: var(--accent-color);
+          color: var(--contrast-color);
+          border-color: var(--accent-color);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  .trust-indicators {
+    small {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      i {
+        color: #fbbf24;
+        font-size: 14px;
+      }
+
+      span {
+        color: color-mix(in srgb, var(--default-color), transparent 40%);
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+}

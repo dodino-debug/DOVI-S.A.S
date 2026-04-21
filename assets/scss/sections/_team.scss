@@ -1,0 +1,147 @@
+// main: ../main.scss
+/*--------------------------------------------------------------
+# Team Section
+--------------------------------------------------------------*/
+.team {
+  .team-card {
+    background: var(--surface-color);
+    border-radius: 20px;
+    padding: 30px 25px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(54, 144, 231, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid color-mix(in srgb, var(--accent-color), transparent 90%);
+
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(54, 144, 231, 0.15);
+
+      .image-wrapper {
+        .social-links {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+  }
+
+  .image-wrapper {
+    position: relative;
+    margin-bottom: 25px;
+
+    img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid color-mix(in srgb, var(--accent-color), transparent 85%);
+      transition: all 0.3s ease;
+    }
+
+    .social-links {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+
+      a {
+        width: 35px;
+        height: 35px;
+        background: var(--accent-color);
+        color: var(--contrast-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 14px;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: var(--heading-color);
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+
+  .content {
+    h4 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--heading-color);
+    }
+
+    .position {
+      color: var(--accent-color);
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: color-mix(in srgb, var(--default-color), transparent 20%);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .team-card {
+      padding: 25px 20px;
+      margin-bottom: 20px;
+    }
+
+    .image-wrapper {
+      img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .social-links {
+        width: 100px;
+        height: 100px;
+        gap: 8px;
+
+        a {
+          width: 28px;
+          height: 28px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .content {
+      h4 {
+        font-size: 20px;
+      }
+
+      .position {
+        font-size: 13px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+    }
+  }
+}
