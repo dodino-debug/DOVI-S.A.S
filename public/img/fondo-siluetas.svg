@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 572" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <path id="h" d="M0 0C12-16 38-16 56 0C38 16 12 16 0 0Z"/>
+    <path id="g" d="M0 0C14-26 52-26 82 0C52 26 14 26 0 0Z"/>
+  </defs>
+  <g fill="#d3ded1">
+    <!-- rama izquierda -->
+    <path d="M0 70C60 60 120 100 190 150" fill="none" stroke="#d3ded1" stroke-width="3"/>
+    <use href="#h" transform="translate(30 66) rotate(-60)"/>
+    <use href="#h" transform="translate(60 78) rotate(30)"/>
+    <use href="#h" transform="translate(95 90) rotate(-50)"/>
+    <use href="#h" transform="translate(125 108) rotate(40)"/>
+    <use href="#h" transform="translate(160 128) rotate(-40)"/>
+    <use href="#h" transform="translate(190 150) rotate(20)"/>
+    <!-- hojas grandes izquierda -->
+    <use href="#g" transform="translate(10 250) rotate(-30)"/>
+    <use href="#g" transform="translate(40 330) rotate(15)"/>
+    <use href="#g" transform="translate(10 410) rotate(40)"/>
+    <!-- arbusto inferior central -->
+    <use href="#g" transform="translate(300 572) rotate(-100)"/>
+    <use href="#g" transform="translate(300 572) rotate(-75)"/>
+    <use href="#g" transform="translate(300 572) rotate(-55)"/>
+    <use href="#h" transform="translate(220 572) rotate(-120)"/>
+    <use href="#h" transform="translate(380 572) rotate(-35)"/>
+    <!-- planta derecha -->
+    <path d="M905 130C965 150 1010 260 1000 440L982 440C975 310 945 210 880 155Z"/>
+    <path d="M860 220C900 190 930 260 960 440L940 440C925 330 890 260 860 220Z"/>
+    <path d="M1000 200C1040 240 1040 340 1010 440L1000 440C1010 340 1010 260 1000 200Z"/>
+    <!-- arbusto inferior derecho -->
+    <use href="#g" transform="translate(900 572) rotate(-95)"/>
+    <use href="#g" transform="translate(900 572) rotate(-120)"/>
+    <use href="#g" transform="translate(900 572) rotate(-70)"/>
+    <use href="#h" transform="translate(800 572) rotate(-60)"/>
+    <use href="#h" transform="translate(1000 572) rotate(-110)"/>
+  </g>
+</svg>

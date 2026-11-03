@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOVI S.A.S. | <%= titulo %></title>
+</head>
+<body>
+  <h1><%= titulo %></h1>
+  <p>Sesión iniciada como <strong><%= usuario.nombre %></strong> (rol: <%= usuario.rol %>).</p>
+  <p>Esta vista es provisional y se reemplaza en los siguientes pasos.</p>
+  <form method="POST" action="/logout">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button type="submit">Cerrar Sesión</button>
+  </form>
+</body>
+</html>

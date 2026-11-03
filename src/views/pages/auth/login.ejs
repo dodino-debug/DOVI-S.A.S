@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOVI S.A.S. | Ingreso</title>
+  <link rel="icon" href="/img/logo.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth">
+  <main class="auth__tarjeta">
+    <h1 class="auth__titulo">DOVI S.A.S. <span aria-hidden="true">🌿</span></h1>
+    <p class="auth__subtitulo">Servicios y Mantenimiento Agrícola</p>
+
+    <% if (error) { %>
+      <p class="auth__error" role="alert"><%= error %></p>
+    <% } %>
+
+    <form method="POST" action="/login" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <label for="correo">Correo Electrónico</label>
+      <input id="correo" name="correo" type="email" placeholder="ejemplo@dovi.com"
+             value="<%= correo %>" autocomplete="username" required>
+
+      <label for="clave">Contraseña</label>
+      <input id="clave" name="clave" type="password" autocomplete="current-password" required>
+
+      <button type="submit">Ingresar a la Plataforma</button>
+    </form>
+  </main>
+</body>
+</html>
