@@ -84,4 +84,13 @@ button {
   cursor: pointer;
 }
 
+button.auth__secundario {
+  margin-top: 10px;
+  color: #1a4731;
+  background: #fff;
+  border: 1px solid #1a4731;
+}
+
+button.auth__secundario:hover { background: #eaf0ea; }
+
 button:hover { background: #143a28; }

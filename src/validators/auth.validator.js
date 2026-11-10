@@ -5,4 +5,13 @@ const validarLogin = [
   body('clave').isString().isLength({ min: 1, max: 200 })
 ];
 
-module.exports = { validarLogin };
+const validarCambioClave = [
+  body('claveActual').isString().isLength({ min: 1, max: 200 }),
+  body('claveNueva')
+    .isString()
+    .isLength({ min: 10, max: 64 })
+    .custom((valor, { req }) => valor !== req.body.claveActual),
+  body('confirmacion').custom((valor, { req }) => valor === req.body.claveNueva)
+];
+
+module.exports = { validarLogin, validarCambioClave };

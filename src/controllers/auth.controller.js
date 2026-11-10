@@ -1,19 +1,13 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const Usuario = require('../models/usuario.model');
+const { rutaInicial } = require('../config/roles');
 
 // Hash de relleno: así el tiempo de respuesta es parecido exista o no el correo.
 const HASH_FALSO = bcrypt.hashSync('relleno-no-valido', 12);
 
-const RUTA_POR_ROL = {
-  admin: '/admin',
-  supervisor: '/supervisor',
-  empleado: '/empleado',
-  cliente: '/cliente'
-};
-
 function mostrarLogin(req, res) {
-  if (req.session.usuario) return res.redirect(RUTA_POR_ROL[req.session.usuario.rol]);
+  if (req.session.usuario) return res.redirect(rutaInicial(req.session.usuario));
   res.render('pages/auth/login', { error: null, correo: '' });
 }
 
@@ -40,11 +34,57 @@ async function procesarLogin(req, res, next) {
 
     req.session.regenerate((errorRegenerar) => {
       if (errorRegenerar) return next(errorRegenerar);
-      req.session.usuario = { id: usuario.id, nombre: usuario.nombre, rol: usuario.rol };
+      req.session.usuario = {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        rol: usuario.rol,
+        debeCambiarClave: usuario.debe_cambiar_clave
+      };
       req.session.save((errorGuardar) => {
         if (errorGuardar) return next(errorGuardar);
-        res.redirect(RUTA_POR_ROL[usuario.rol]);
+        res.redirect(rutaInicial(req.session.usuario));
       });
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function mostrarCambioClave(req, res) {
+  res.render('pages/auth/cambiar-clave', {
+    error: null,
+    obligatorio: req.session.usuario.debeCambiarClave
+  });
+}
+
+async function procesarCambioClave(req, res, next) {
+  const obligatorio = req.session.usuario.debeCambiarClave;
+  const responder = (estado, error) =>
+    res.status(estado).render('pages/auth/cambiar-clave', { error, obligatorio });
+
+  try {
+    if (!validationResult(req).isEmpty()) {
+      return responder(
+        400,
+        'La nueva contraseña debe tener entre 10 y 64 caracteres, ser distinta de la actual y coincidir con la confirmación.'
+      );
+    }
+
+    const usuario = await Usuario.buscarPorId(req.session.usuario.id);
+    if (!usuario || !usuario.activo) {
+      return req.session.destroy(() => res.redirect('/login'));
+    }
+
+    const correcta = await bcrypt.compare(req.body.claveActual, usuario.password_hash);
+    if (!correcta) return responder(401, 'La contraseña actual no es correcta.');
+
+    const hash = await bcrypt.hash(req.body.claveNueva, 12);
+    await Usuario.actualizarClave(usuario.id, hash);
+
+    req.session.usuario.debeCambiarClave = false;
+    req.session.save((error) => {
+      if (error) return next(error);
+      res.redirect(rutaInicial(req.session.usuario));
     });
   } catch (error) {
     next(error);
@@ -59,4 +99,10 @@ function cerrarSesion(req, res, next) {
   });
 }
 
-module.exports = { mostrarLogin, procesarLogin, cerrarSesion };
+module.exports = {
+  mostrarLogin,
+  procesarLogin,
+  mostrarCambioClave,
+  procesarCambioClave,
+  cerrarSesion
+};
