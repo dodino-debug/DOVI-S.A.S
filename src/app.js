@@ -6,6 +6,7 @@ const sesion = require('./config/session');
 const { tokenCsrf, verificarCsrf } = require('./middlewares/csrf');
 const authRoutes = require('./routes/auth');
 const panelesRoutes = require('./routes/paneles');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(tokenCsrf);
 app.use(verificarCsrf);
 
 app.use(authRoutes);
+app.use(adminRoutes);
 app.use(panelesRoutes);
 
 app.use((req, res) => {

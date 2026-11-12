@@ -1,0 +1,24 @@
+<%- include('../../partials/admin-inicio', { titulo: 'Solicitud #' + solicitud.id }) %>
+
+<section class="encabezado">
+  <h1>Solicitud #<%= solicitud.id %></h1>
+  <p><a class="enlace-volver" href="/admin">← Volver al tablero</a></p>
+</section>
+
+<section class="tarjeta" style="margin-top: 34px;">
+  <dl class="detalle">
+    <dt>Estado</dt><dd><%= estadoEtiqueta %></dd>
+    <dt>Cliente</dt><dd><%= solicitud.cliente %></dd>
+    <dt>Predio</dt><dd><%= solicitud.predio %></dd>
+    <dt>Ubicación</dt><dd><%= solicitud.ubicacion %></dd>
+    <dt>Labor solicitada</dt><dd><%= solicitud.servicio %></dd>
+    <dt>Fecha deseada</dt><dd><%= solicitud.fecha_deseada %></dd>
+    <dt>Detalles</dt><dd class="detalle__texto"><%= solicitud.detalles || 'Sin detalles' %></dd>
+    <dt>Registrada</dt><dd><%= solicitud.creada %></dd>
+  </dl>
+  <div class="tarjeta__nota">
+    <span>Aprobar, rechazar, reagendar y programar la labor se habilitan en el siguiente paso.</span>
+  </div>
+</section>
+
+<%- include('../../partials/admin-fin') %>

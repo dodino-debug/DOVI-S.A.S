@@ -3,7 +3,8 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed:admin": "node src/scripts/seed-admin.js",
-    "seed:pruebas": "node src/scripts/seed-pruebas.js"
+    "seed:pruebas": "node src/scripts/seed-pruebas.js",
+    "seed:demo": "node src/scripts/seed-demo.js"
   },
   "engines": {
     "node": ">=20"

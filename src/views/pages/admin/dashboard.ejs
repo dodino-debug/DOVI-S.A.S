@@ -1,0 +1,59 @@
+<%- include('../../partials/admin-inicio', { titulo: 'Tablero de Control' }) %>
+
+<section class="encabezado">
+  <h1>Tablero de Control Operativo</h1>
+  <p>Resumen de labores y solicitudes activas para hoy</p>
+</section>
+
+<section class="metricas">
+  <article class="metrica">
+    <p class="metrica__etiqueta">Solicitudes Pendientes</p>
+    <p class="metrica__valor" data-metrica="pendientes"><%= resumen.pendientes %></p>
+  </article>
+  <article class="metrica">
+    <p class="metrica__etiqueta">Labores Para Hoy</p>
+    <p class="metrica__valor" data-metrica="laboresHoy"><%= resumen.laboresHoy %></p>
+  </article>
+  <article class="metrica">
+    <p class="metrica__etiqueta">Empleados en Campo</p>
+    <p class="metrica__valor" data-metrica="empleadosEnCampo"><%= resumen.empleadosEnCampo %></p>
+  </article>
+</section>
+
+<section class="tarjeta">
+  <h2>Solicitudes Recientes por Revisar</h2>
+  <div class="tabla-scroll">
+    <table>
+      <colgroup>
+        <col style="width: 8.5%"><col style="width: 14%"><col style="width: 18.2%">
+        <col style="width: 19.7%"><col style="width: 13.7%"><col style="width: 25.9%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>ID</th><th>Cliente</th><th>Predio</th>
+          <th>Labor Solicitada</th><th>Fecha Deseada</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody data-filas>
+        <% if (solicitudes.length === 0) { %>
+          <tr><td class="vacio" colspan="6">No hay solicitudes pendientes por revisar.</td></tr>
+        <% } else { solicitudes.forEach(function (s) { %>
+          <tr>
+            <td class="id">#<%= s.id %></td>
+            <td class="cliente"><%= s.cliente %></td>
+            <td><%= s.predio %></td>
+            <td><%= s.labor %></td>
+            <td><%= s.fechaDeseada %></td>
+            <td><a class="boton" href="/admin/solicitudes/<%= s.id %>">Programar Labor</a></td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>Seleccione una solicitud para programar la labor.</span>
+    <span class="aviso" data-aviso hidden>No se pudo actualizar. Reintentando…</span>
+  </div>
+</section>
+
+<%- include('../../partials/admin-fin', { scripts: ['/js/dashboard-admin.js'] }) %>
