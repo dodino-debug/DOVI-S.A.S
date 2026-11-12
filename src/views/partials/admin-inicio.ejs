@@ -1,3 +1,9 @@
+<%
+  var enlaces = [
+    ['servicios', '/admin/servicios', 'Servicios'],
+    ['reportes', '/admin/reportes', 'Reportes']
+  ];
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,10 +22,16 @@
 <body class="admin">
   <header class="barra">
     <div class="barra__interior">
-      <img class="barra__logo" src="/img/icon-192.png" alt="" width="58" height="58">
-      <span class="barra__titulo">DOVI S.A.S. | Módulo Administrador</span>
-      <nav class="barra__menu">
-        <a href="/admin/reportes">Reportes</a>
+      <a class="barra__marca" href="/admin">
+        <img class="barra__logo" src="/img/icon-192.png" alt="" width="58" height="58">
+        <span class="barra__titulo">DOVI S.A.S. | Módulo Administrador</span>
+      </a>
+      <button class="barra__toggle" type="button" aria-expanded="false"
+              aria-controls="menu-admin" aria-label="Abrir menú">☰</button>
+      <nav class="barra__menu" id="menu-admin">
+        <% enlaces.forEach(function (e) { %>
+          <a href="<%= e[1] %>"<%- locals.activo === e[0] ? ' aria-current="page"' : '' %>><%= e[2] %></a>
+        <% }) %>
         <form method="POST" action="/logout">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit">Cerrar Sesión</button>
@@ -28,3 +40,6 @@
     </div>
   </header>
   <main class="contenedor">
+    <% if (locals.flash) { %>
+      <p class="flash flash--<%= flash.tipo %>" role="status"><%= flash.texto %></p>
+    <% } %>

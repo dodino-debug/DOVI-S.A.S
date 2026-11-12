@@ -1,0 +1,56 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Servicios', activo: 'servicios' }) %>
+
+<section class="encabezado encabezado--accion">
+  <div>
+    <h1>Catálogo de Servicios</h1>
+    <p>Servicios que los clientes pueden solicitar</p>
+  </div>
+  <a class="boton boton--grande" href="/admin/servicios/nuevo">+ Nuevo Servicio</a>
+</section>
+
+<section class="tarjeta" style="margin-top: 34px;">
+  <div class="tabla-scroll">
+    <table>
+      <colgroup>
+        <col style="width: 22%"><col style="width: 30%"><col style="width: 11%">
+        <col style="width: 12%"><col style="width: 25%">
+      </colgroup>
+      <thead>
+        <tr><th>Servicio</th><th>Descripción</th><th>Solicitudes</th><th>Estado</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (servicios.length === 0) { %>
+          <tr><td class="vacio" colspan="5">No hay servicios registrados.</td></tr>
+        <% } else { servicios.forEach(function (s) { %>
+          <tr>
+            <td class="cliente"><%= s.nombre %></td>
+            <td><%= s.descripcion || '—' %></td>
+            <td><%= s.solicitudes %></td>
+            <td>
+              <span class="insignia <%= s.activo ? 'insignia--ok' : 'insignia--off' %>">
+                <%= s.activo ? 'ACTIVO' : 'INACTIVO' %>
+              </span>
+            </td>
+            <td>
+              <div class="acciones">
+                <a class="boton" href="/admin/servicios/<%= s.id %>/editar">Editar</a>
+                <form method="POST" action="/admin/servicios/<%= s.id %>/estado">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="activo" value="<%= s.activo ? 'false' : 'true' %>">
+                  <button type="submit" class="boton boton--secundario">
+                    <%= s.activo ? 'Desactivar' : 'Activar' %>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>Un servicio desactivado deja de ofrecerse a los clientes, pero se conserva en el historial.</span>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

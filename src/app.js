@@ -7,6 +7,7 @@ const { tokenCsrf, verificarCsrf } = require('./middlewares/csrf');
 const authRoutes = require('./routes/auth');
 const panelesRoutes = require('./routes/paneles');
 const adminRoutes = require('./routes/admin');
+const flash = require('./middlewares/flash');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get('/salud', async (req, res, next) => {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(sesion);
+app.use(flash);
 app.use((req, res, next) => {
   res.locals.usuario = req.session.usuario || null;
   next();

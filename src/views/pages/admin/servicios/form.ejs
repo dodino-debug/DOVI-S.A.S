@@ -1,0 +1,35 @@
+<%- include('../../../partials/admin-inicio', {
+  titulo: servicio.id ? 'Editar servicio' : 'Nuevo servicio',
+  activo: 'servicios'
+}) %>
+
+<section class="encabezado">
+  <h1><%= servicio.id ? 'Editar Servicio' : 'Nuevo Servicio' %></h1>
+  <p><a class="enlace-volver" href="/admin/servicios">← Volver al catálogo</a></p>
+</section>
+
+<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+  <form class="formulario" method="POST" novalidate
+        action="<%= servicio.id ? '/admin/servicios/' + servicio.id : '/admin/servicios' %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <% if (errores.length) { %>
+      <ul class="errores" role="alert">
+        <% errores.forEach(function (e) { %><li><%= e %></li><% }) %>
+      </ul>
+    <% } %>
+
+    <label for="nombre">Nombre del servicio</label>
+    <input id="nombre" name="nombre" type="text" maxlength="120" value="<%= servicio.nombre %>" required>
+
+    <label for="descripcion">Descripción (opcional)</label>
+    <textarea id="descripcion" name="descripcion" rows="4" maxlength="500"><%= servicio.descripcion %></textarea>
+
+    <div class="formulario__acciones">
+      <button type="submit" class="boton boton--grande">Guardar</button>
+      <a class="boton boton--grande boton--secundario" href="/admin/servicios">Cancelar</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../../../partials/admin-fin') %>
