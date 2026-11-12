@@ -1,0 +1,96 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Usuarios', activo: 'usuarios' }) %>
+
+<section class="encabezado encabezado--accion">
+  <div>
+    <h1>Usuarios</h1>
+    <p>Personas con acceso a la plataforma</p>
+  </div>
+  <a class="boton boton--grande" href="/admin/usuarios/nuevo">+ Nuevo Usuario</a>
+</section>
+
+<form class="filtros" method="GET" action="/admin/usuarios">
+  <label>Rol
+    <select name="rol">
+      <option value="">Todos</option>
+      <% roles.forEach(function (r) { %>
+        <option value="<%= r %>"<%- filtros.rol === r ? ' selected' : '' %>><%= etiquetaRol[r] %></option>
+      <% }) %>
+    </select>
+  </label>
+  <label>Estado
+    <select name="estado">
+      <option value="">Todos</option>
+      <option value="activos"<%- filtros.estado === 'activos' ? ' selected' : '' %>>Activos</option>
+      <option value="inactivos"<%- filtros.estado === 'inactivos' ? ' selected' : '' %>>Inactivos</option>
+    </select>
+  </label>
+  <button type="submit" class="boton boton--secundario">Filtrar</button>
+</form>
+
+<section class="tarjeta">
+  <div class="tabla-scroll">
+    <table style="min-width: 980px;">
+      <colgroup>
+        <col style="width: 17%"><col style="width: 22%"><col style="width: 10%">
+        <col style="width: 15%"><col style="width: 13%"><col style="width: 23%">
+      </colgroup>
+      <thead>
+        <tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Equipo</th><th>Estado</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (usuarios.length === 0) { %>
+          <tr><td class="vacio" colspan="6">No hay usuarios con ese filtro.</td></tr>
+        <% } else { usuarios.forEach(function (u) { var propio = u.id === usuario.id; %>
+          <tr>
+            <td class="cliente"><%= u.nombre %><%= propio ? ' (tú)' : '' %></td>
+            <td><%= u.correo %></td>
+            <td><%= etiquetaRol[u.rol] %></td>
+            <td>
+              <% if (u.rol === 'supervisor') { %>
+                <%= u.equipo %> <%= u.equipo === 1 ? 'empleado' : 'empleados' %>
+              <% } else if (u.rol === 'empleado') { %>
+                <%= u.supervisor || 'Sin supervisor' %>
+              <% } else { %>—<% } %>
+            </td>
+            <td>
+              <div class="acciones">
+                <span class="insignia <%= u.activo ? 'insignia--ok' : 'insignia--off' %>">
+                  <%= u.activo ? 'ACTIVO' : 'INACTIVO' %>
+                </span>
+                <% if (u.debe_cambiar_clave) { %>
+                  <span class="insignia insignia--aviso">CLAVE TEMPORAL</span>
+                <% } %>
+              </div>
+            </td>
+            <td>
+              <div class="acciones">
+                <% if (u.rol !== 'cliente') { %>
+                  <a class="boton" href="/admin/usuarios/<%= u.id %>/editar">Editar</a>
+                <% } %>
+                <% if (!propio) { %>
+                  <form method="POST" action="/admin/usuarios/<%= u.id %>/estado">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" name="activo" value="<%= u.activo ? 'false' : 'true' %>">
+                    <button type="submit" class="boton boton--secundario">
+                      <%= u.activo ? 'Desactivar' : 'Activar' %>
+                    </button>
+                  </form>
+                  <form method="POST" action="/admin/usuarios/<%= u.id %>/restablecer-clave"
+                        data-confirmar="¿Restablecer la contraseña de <%= u.nombre %>? Se cerrarán sus sesiones abiertas.">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="boton boton--secundario">Restablecer clave</button>
+                  </form>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>Un usuario desactivado pierde el acceso en su siguiente petición, pero se conserva en el historial.</span>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

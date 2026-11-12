@@ -1,0 +1,35 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Contraseña temporal', activo: 'usuarios' }) %>
+
+<section class="encabezado">
+  <h1>Cuenta <%= accion === 'creada' ? 'creada' : 'actualizada' %></h1>
+  <p>
+    <%= accion === 'creada'
+      ? 'Entrega estos datos al usuario por un medio seguro.'
+      : 'La contraseña anterior ya no sirve y sus sesiones abiertas se cerraron.' %>
+  </p>
+</section>
+
+<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+  <dl class="detalle" style="grid-template-columns: 140px 1fr;">
+    <dt>Nombre</dt><dd><%= cuenta.nombre %></dd>
+    <dt>Rol</dt><dd><%= etiquetaRol[cuenta.rol] %></dd>
+    <dt>Correo</dt><dd><%= cuenta.correo %></dd>
+  </dl>
+
+  <div class="credencial">
+    Contraseña temporal
+    <code class="credencial__clave"><%= clave %></code>
+  </div>
+
+  <div class="tarjeta__nota">
+    <span>
+      No se volverá a mostrar y no queda guardada en ningún lado. No recargues esta página:
+      si la recargas, se intentaría repetir la acción. Si la pierdes, usa "Restablecer clave".
+    </span>
+  </div>
+  <div class="formulario">
+    <a class="boton boton--grande" href="/admin/usuarios">Volver a usuarios</a>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>
