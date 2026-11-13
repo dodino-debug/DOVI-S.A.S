@@ -1,0 +1,71 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Clientes', activo: 'clientes' }) %>
+
+<section class="encabezado encabezado--accion">
+  <div>
+    <h1>Clientes</h1>
+    <p>Directorio de clientes y sus predios</p>
+  </div>
+  <a class="boton boton--grande" href="/admin/clientes/nuevo">+ Nuevo Cliente</a>
+</section>
+
+<form class="buscador" method="GET" action="/admin/clientes">
+  <label>Buscar por nombre, documento o correo
+    <input type="search" name="q" value="<%= q %>" maxlength="100">
+  </label>
+  <button type="submit" class="boton boton--secundario">Buscar</button>
+  <% if (q) { %><a class="boton boton--secundario" href="/admin/clientes">Limpiar</a><% } %>
+</form>
+
+<section class="tarjeta">
+  <div class="tabla-scroll">
+    <table style="min-width: 980px;">
+      <colgroup>
+        <col style="width: 22%"><col style="width: 20%"><col style="width: 14%">
+        <col style="width: 9%"><col style="width: 11%"><col style="width: 24%">
+      </colgroup>
+      <thead>
+        <tr><th>Cliente</th><th>Contacto</th><th>Acceso</th><th>Predios</th><th>Solicitudes</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (clientes.length === 0) { %>
+          <tr><td class="vacio" colspan="6">
+            <%= q ? 'No hay clientes que coincidan con la búsqueda.' : 'Aún no hay clientes registrados.' %>
+          </td></tr>
+        <% } else { clientes.forEach(function (c) { %>
+          <tr>
+            <td class="cliente">
+              <%= c.nombre %>
+              <% if (c.documento) { %><span class="dato-secundario"><%= c.documento %></span><% } %>
+            </td>
+            <td>
+              <%= c.telefono || '—' %>
+              <% if (c.correo) { %><span class="dato-secundario"><%= c.correo %></span><% } %>
+            </td>
+            <td>
+              <% if (!c.tiene_acceso) { %>
+                <span class="insignia insignia--off">SIN ACCESO</span>
+              <% } else if (c.acceso_activo) { %>
+                <span class="insignia insignia--ok">CON ACCESO</span>
+              <% } else { %>
+                <span class="insignia insignia--aviso">ACCESO INACTIVO</span>
+              <% } %>
+            </td>
+            <td><%= c.predios %></td>
+            <td><%= c.solicitudes %></td>
+            <td>
+              <div class="acciones">
+                <a class="boton" href="/admin/clientes/<%= c.id %>">Ver</a>
+                <a class="boton boton--secundario" href="/admin/clientes/<%= c.id %>/editar">Editar</a>
+              </div>
+            </td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>El número de predios cuenta solo los activos.</span>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

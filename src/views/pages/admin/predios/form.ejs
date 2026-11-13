@@ -1,0 +1,43 @@
+<% var editando = !!predio.id; %>
+<%- include('../../../partials/admin-inicio', {
+  titulo: editando ? 'Editar predio' : 'Nuevo predio',
+  activo: 'clientes'
+}) %>
+
+<section class="encabezado">
+  <h1><%= editando ? 'Editar Predio' : 'Nuevo Predio' %></h1>
+  <p>
+    Cliente: <strong><%= cliente.nombre %></strong> ·
+    <a class="enlace-volver" href="/admin/clientes/<%= cliente.id %>">← Volver al cliente</a>
+  </p>
+</section>
+
+<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+  <form class="formulario" method="POST" novalidate
+        action="<%= editando ? '/admin/predios/' + predio.id : '/admin/clientes/' + cliente.id + '/predios' %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <% if (errores.length) { %>
+      <ul class="errores" role="alert">
+        <% errores.forEach(function (e) { %><li><%= e %></li><% }) %>
+      </ul>
+    <% } %>
+
+    <label for="nombre">Nombre del predio</label>
+    <input id="nombre" name="nombre" type="text" maxlength="160" value="<%= predio.nombre %>" required>
+
+    <label for="ubicacion">Ubicación (vereda, municipio y referencias)</label>
+    <textarea id="ubicacion" name="ubicacion" rows="3" maxlength="500" required><%= predio.ubicacion %></textarea>
+
+    <label for="area">Área en hectáreas (opcional)</label>
+    <input id="area" name="area" type="text" inputmode="decimal" maxlength="10"
+           value="<%= predio.area %>" placeholder="Por ejemplo 12.5">
+
+    <div class="formulario__acciones">
+      <button type="submit" class="boton boton--grande"><%= editando ? 'Guardar' : 'Crear predio' %></button>
+      <a class="boton boton--grande boton--secundario" href="/admin/clientes/<%= cliente.id %>">Cancelar</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

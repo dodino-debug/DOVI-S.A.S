@@ -1,0 +1,63 @@
+<% var editando = !!cliente.id; %>
+<%- include('../../../partials/admin-inicio', {
+  titulo: editando ? 'Editar cliente' : 'Nuevo cliente',
+  activo: 'clientes'
+}) %>
+
+<section class="encabezado">
+  <h1><%= editando ? 'Editar Cliente' : 'Nuevo Cliente' %></h1>
+  <p>
+    <a class="enlace-volver" href="<%= editando ? '/admin/clientes/' + cliente.id : '/admin/clientes' %>">
+      ← Volver
+    </a>
+  </p>
+</section>
+
+<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+  <form class="formulario" method="POST" novalidate
+        action="<%= editando ? '/admin/clientes/' + cliente.id : '/admin/clientes' %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <% if (errores.length) { %>
+      <ul class="errores" role="alert">
+        <% errores.forEach(function (e) { %><li><%= e %></li><% }) %>
+      </ul>
+    <% } %>
+
+    <label for="nombre">Nombre o razón social</label>
+    <input id="nombre" name="nombre" type="text" maxlength="160" value="<%= cliente.nombre %>" required>
+
+    <label for="documento">Documento: cédula o NIT (opcional)</label>
+    <input id="documento" name="documento" type="text" maxlength="30" value="<%= cliente.documento %>"
+           autocomplete="off">
+
+    <label for="telefono">Teléfono (opcional)</label>
+    <input id="telefono" name="telefono" type="tel" maxlength="30" value="<%= cliente.telefono %>">
+
+    <label for="direccion_contacto">Dirección de contacto (opcional)</label>
+    <input id="direccion_contacto" name="direccion_contacto" type="text" maxlength="200"
+           value="<%= cliente.direccion_contacto %>">
+
+    <label for="correo">
+      <%= cliente.tiene_acceso ? 'Correo electrónico (acceso a la plataforma)' : 'Correo electrónico (opcional)' %>
+    </label>
+    <input id="correo" name="correo" type="email" maxlength="160" value="<%= cliente.correo %>"
+           autocomplete="off"<%- cliente.tiene_acceso ? ' required' : '' %>>
+    <p class="formulario__ayuda">
+      <% if (cliente.tiene_acceso) { %>
+        Este cliente ya tiene acceso. Si cambias el correo, deberá usar el nuevo para ingresar.
+      <% } else { %>
+        Si escribes un correo, se crea el acceso del cliente con una contraseña temporal que verás una
+        sola vez. Si lo dejas vacío, el cliente queda solo en el directorio.
+      <% } %>
+    </p>
+
+    <div class="formulario__acciones">
+      <button type="submit" class="boton boton--grande"><%= editando ? 'Guardar' : 'Crear cliente' %></button>
+      <a class="boton boton--grande boton--secundario"
+         href="<%= editando ? '/admin/clientes/' + cliente.id : '/admin/clientes' %>">Cancelar</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

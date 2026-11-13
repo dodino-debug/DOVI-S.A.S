@@ -1,41 +1,94 @@
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>DOVI S.A.S. | <%= titulo %></title>
+
   <link rel="icon" href="/img/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
   <link rel="stylesheet" href="/css/admin.css">
 </head>
+
 <body class="admin">
+
   <header class="barra">
     <div class="barra__interior">
+
       <a class="barra__marca" href="/admin">
-        <img class="barra__logo" src="/img/icon-192.png" alt="" width="58" height="58">
-        <span class="barra__titulo">DOVI S.A.S. | Módulo Administrador</span>
+        <img class="barra__logo"
+             src="/img/icon-192.png"
+             alt=""
+             width="58"
+             height="58">
+
+        <span class="barra__titulo">
+          DOVI S.A.S. | Módulo Administrador
+        </span>
       </a>
-      <button class="barra__toggle" type="button" aria-expanded="false"
-              aria-controls="menu-admin" aria-label="Abrir menú">☰</button>
+
+      <button class="barra__toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="menu-admin"
+              aria-label="Abrir menú">
+        ☰
+      </button>
+
       <nav class="barra__menu" id="menu-admin">
+
+        <%
+          var enlaces = [
+            ['clientes', '/admin/clientes', 'Clientes'],
+            ['servicios', '/admin/servicios', 'Servicios'],
+            ['usuarios', '/admin/usuarios', 'Usuarios'],
+            ['reportes', '/admin/reportes', 'Reportes']
+          ];
+        %>
+
         <% enlaces.forEach(function (e) { %>
-          <a href="<%= e[1] %>"<%- locals.activo === e[0] ? ' aria-current="page"' : '' %>><%= e[2] %></a>
+
+          <a href="<%= e[1] %>"
+             <%- locals.activo === e[0] ? 'aria-current="page"' : '' %>>
+            <%= e[2] %>
+          </a>
+
         <% }) %>
+
         <form method="POST" action="/logout">
+
           <% if (locals.csrfToken) { %>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden"
+                   name="_csrf"
+                   value="<%= csrfToken %>">
           <% } %>
+
           <button type="submit">Cerrar Sesión</button>
+
         </form>
+
       </nav>
     </div>
   </header>
+
   <main class="contenedor">
+
     <% if (locals.flash) { %>
-      <p class="flash flash--<%= flash.tipo %>" role="status"><%= flash.texto %></p>
+
+      <p class="flash flash--<%= flash.tipo %>" role="status">
+        <%= flash.texto %>
+      </p>
+
     <% } %>

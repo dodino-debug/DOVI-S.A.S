@@ -9,7 +9,11 @@ body.auth {
   padding: 16px;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: #1f2937;
-  background: #eaf0ea url('/img/fondo-siluetas.svg') center / cover no-repeat;
+  background-color: #ecf1eb;
+  background-image: url('/img/fondo.webp');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .auth__tarjeta {

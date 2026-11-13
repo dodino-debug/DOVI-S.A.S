@@ -17,6 +17,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(helmet());
+
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/salud', async (req, res, next) => {
@@ -29,13 +30,18 @@ app.get('/salud', async (req, res, next) => {
 });
 
 app.use(express.urlencoded({ extended: false }));
+
+// 2. ORDEN CRÍTICO: La sesión y el manejo de usuario DEBEN ir antes de generar el CSRF
 app.use(sesion);
 app.use(sesionVigente);
 app.use(flash);
+
 app.use((req, res, next) => {
   res.locals.usuario = req.session.usuario || null;
   next();
 });
+
+// 3. El CSRF se ejecuta después de que la sesión ya está lista y cargada
 app.use(tokenCsrf);
 app.use(verificarCsrf);
 

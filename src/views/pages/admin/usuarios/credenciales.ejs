@@ -28,8 +28,10 @@
     </span>
   </div>
   <div class="formulario">
-    <a class="boton boton--grande" href="/admin/usuarios">Volver a usuarios</a>
+    <a class="boton boton--grande" href="<%= destino.href %>"><%= destino.texto %></a>
   </div>
 </section>
+
+<% var destino = locals.volver || { href: '/admin/usuarios', texto: 'Volver a usuarios' }; %>
 
 <%- include('../../../partials/admin-fin') %>

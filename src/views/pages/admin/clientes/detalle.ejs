@@ -1,0 +1,84 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Cliente: ' + cliente.nombre, activo: 'clientes' }) %>
+
+<section class="encabezado encabezado--accion">
+  <div>
+    <h1><%= cliente.nombre %></h1>
+    <p><a class="enlace-volver" href="/admin/clientes">← Volver a clientes</a></p>
+  </div>
+  <a class="boton boton--grande" href="/admin/clientes/<%= cliente.id %>/editar">Editar Cliente</a>
+</section>
+
+<section class="tarjeta" style="margin-top: 34px;">
+  <dl class="detalle">
+    <dt>Documento</dt><dd><%= cliente.documento || '—' %></dd>
+    <dt>Teléfono</dt><dd><%= cliente.telefono || '—' %></dd>
+    <dt>Dirección de contacto</dt><dd><%= cliente.direccion_contacto || '—' %></dd>
+    <dt>Acceso a la plataforma</dt>
+    <dd>
+      <% if (!cliente.tiene_acceso) { %>
+        <span class="insignia insignia--off">SIN ACCESO</span>
+        Se puede crear editando el cliente y agregando un correo.
+      <% } else { %>
+        <%= cliente.correo %>
+        <span class="insignia <%= cliente.acceso_activo ? 'insignia--ok' : 'insignia--aviso' %>">
+          <%= cliente.acceso_activo ? 'ACTIVO' : 'INACTIVO' %>
+        </span>
+        <span class="dato-secundario">Activar, desactivar o restablecer la clave se hace desde
+          <a class="enlace-volver" href="/admin/usuarios">Usuarios</a>.</span>
+      <% } %>
+    </dd>
+    <dt>Registrado</dt><dd><%= cliente.creado %></dd>
+  </dl>
+</section>
+
+<section class="tarjeta">
+  <div class="tarjeta__cabecera">
+    <h2>Predios</h2>
+    <a class="boton boton--grande" href="/admin/clientes/<%= cliente.id %>/predios/nuevo">+ Nuevo Predio</a>
+  </div>
+  <div class="tabla-scroll">
+    <table style="min-width: 900px;">
+      <colgroup>
+        <col style="width: 20%"><col style="width: 30%"><col style="width: 10%">
+        <col style="width: 10%"><col style="width: 10%"><col style="width: 20%">
+      </colgroup>
+      <thead>
+        <tr><th>Predio</th><th>Ubicación</th><th>Área</th><th>Solicitudes</th><th>Estado</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (predios.length === 0) { %>
+          <tr><td class="vacio" colspan="6">Este cliente aún no tiene predios registrados.</td></tr>
+        <% } else { predios.forEach(function (p) { %>
+          <tr>
+            <td class="cliente"><%= p.nombre %></td>
+            <td><%= p.ubicacion %></td>
+            <td><%= p.area_hectareas ? Number(p.area_hectareas).toLocaleString('es-CO', { maximumFractionDigits: 2 }) + ' ha' : '—' %></td>
+            <td><%= p.solicitudes %></td>
+            <td>
+              <span class="insignia <%= p.activo ? 'insignia--ok' : 'insignia--off' %>">
+                <%= p.activo ? 'ACTIVO' : 'INACTIVO' %>
+              </span>
+            </td>
+            <td>
+              <div class="acciones">
+                <a class="boton" href="/admin/predios/<%= p.id %>/editar">Editar</a>
+                <form method="POST" action="/admin/predios/<%= p.id %>/estado">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="activo" value="<%= p.activo ? 'false' : 'true' %>">
+                  <button type="submit" class="boton boton--secundario">
+                    <%= p.activo ? 'Desactivar' : 'Activar' %>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>Un predio desactivado deja de ofrecerse en nuevas solicitudes, pero conserva su historial.</span>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>
