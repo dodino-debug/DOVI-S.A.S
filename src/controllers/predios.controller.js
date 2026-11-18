@@ -1,27 +1,20 @@
 const { validationResult } = require('express-validator');
 const Cliente = require('../models/cliente.model');
-const Predio = require('../models/predio.model');
+const Finca = require('../models/finca.model');
+const { esId, texto, mensajesDeError } = require('../utils/entrada');
 
-const esId = (valor) => /^\d{1,9}$/.test(valor);
-const texto = (valor) => (typeof valor === 'string' ? valor.trim() : '');
 const MENSAJE_DUPLICADO = 'Este cliente ya tiene un predio con ese nombre.';
 
-function leerDatos(body) {
-  return {
-    nombre: texto(body.nombre),
-    ubicacion: texto(body.ubicacion),
-    area: texto(body.area).replace(',', '.')
-  };
-}
+const leerDatos = (body) => ({
+  nombre: texto(body.nombre),
+  ubicacion: texto(body.ubicacion),
+  area: texto(body.area).replace(',', '.')
+});
 
 const areaTexto = (area) => (area ? String(Number(area)) : '');
 
 function mostrarForm(res, estado, cliente, predio, errores) {
   res.status(estado).render('pages/admin/predios/form', { cliente, predio, errores });
-}
-
-function mensajesDeError(resultado) {
-  return resultado.array({ onlyFirstError: true }).map((e) => e.msg);
 }
 
 async function formularioNuevo(req, res, next) {
@@ -49,7 +42,7 @@ async function crear(req, res, next) {
     if (!resultado.isEmpty()) return mostrarForm(res, 400, cliente, predio, mensajesDeError(resultado));
 
     try {
-      await Predio.crear(clienteId, datos);
+      await Finca.crear(clienteId, datos);
     } catch (error) {
       if (error.code === '23505') return mostrarForm(res, 400, cliente, predio, [MENSAJE_DUPLICADO]);
       throw error;
@@ -63,13 +56,18 @@ async function crear(req, res, next) {
 async function formularioEditar(req, res, next) {
   try {
     if (!esId(req.params.id)) return next();
-    const actual = await Predio.buscarPorId(Number(req.params.id));
+    const actual = await Finca.buscarPorId(Number(req.params.id));
     if (!actual) return next();
     mostrarForm(
       res,
       200,
       { id: actual.cliente_id, nombre: actual.cliente_nombre },
-      { id: actual.id, nombre: actual.nombre, ubicacion: actual.ubicacion, area: areaTexto(actual.area_hectareas) },
+      {
+        id: actual.id,
+        nombre: actual.nombre,
+        ubicacion: actual.ubicacion,
+        area: areaTexto(actual.area_hectareas)
+      },
       []
     );
   } catch (error) {
@@ -81,7 +79,7 @@ async function actualizar(req, res, next) {
   try {
     if (!esId(req.params.id)) return next();
     const id = Number(req.params.id);
-    const actual = await Predio.buscarPorId(id);
+    const actual = await Finca.buscarPorId(id);
     if (!actual) return next();
 
     const cliente = { id: actual.cliente_id, nombre: actual.cliente_nombre };
@@ -92,7 +90,7 @@ async function actualizar(req, res, next) {
     if (!resultado.isEmpty()) return mostrarForm(res, 400, cliente, predio, mensajesDeError(resultado));
 
     try {
-      if (!(await Predio.actualizar(id, datos))) return next();
+      if (!(await Finca.actualizar(id, datos))) return next();
     } catch (error) {
       if (error.code === '23505') return mostrarForm(res, 400, cliente, predio, [MENSAJE_DUPLICADO]);
       throw error;
@@ -107,7 +105,7 @@ async function cambiarEstado(req, res, next) {
   try {
     if (!esId(req.params.id)) return next();
     const activo = req.body.activo === 'true';
-    const predio = await Predio.cambiarEstado(Number(req.params.id), activo);
+    const predio = await Finca.cambiarEstado(Number(req.params.id), activo);
     if (!predio) return next();
     res.redirigir(
       `/admin/clientes/${predio.cliente_id}`,

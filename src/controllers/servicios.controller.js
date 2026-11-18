@@ -1,8 +1,6 @@
 const { validationResult } = require('express-validator');
 const Servicio = require('../models/servicio.model');
-
-const esId = (valor) => /^\d{1,9}$/.test(valor);
-const texto = (valor) => (typeof valor === 'string' ? valor.trim() : '');
+const { esId, texto, mensajesDeError } = require('../utils/entrada');
 
 function mostrarFormulario(res, estado, servicio, errores) {
   res.status(estado).render('pages/admin/servicios/form', { servicio, errores });
@@ -36,10 +34,7 @@ async function procesar(req, res, next, id) {
 
   try {
     const resultado = validationResult(req);
-    if (!resultado.isEmpty()) {
-      const errores = resultado.array({ onlyFirstError: true }).map((e) => e.msg);
-      return mostrarFormulario(res, 400, servicio, errores);
-    }
+    if (!resultado.isEmpty()) return mostrarFormulario(res, 400, servicio, mensajesDeError(resultado));
 
     if (id) {
       if (!(await Servicio.actualizar(id, servicio))) return next();

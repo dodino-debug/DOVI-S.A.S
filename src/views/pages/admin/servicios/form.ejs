@@ -20,10 +20,10 @@
     <% } %>
 
     <label for="nombre">Nombre del servicio</label>
-    <input id="nombre" name="nombre" type="text" maxlength="120" value="<%= servicio.nombre %>" required>
+    <input id="nombre" name="nombre" type="text" maxlength="100" value="<%= servicio.nombre %>" required>
 
     <label for="descripcion">Descripción (opcional)</label>
-    <textarea id="descripcion" name="descripcion" rows="4" maxlength="500"><%= servicio.descripcion %></textarea>
+    <textarea id="descripcion" name="descripcion" rows="4" maxlength="255"><%= servicio.descripcion %></textarea>
 
     <div class="formulario__acciones">
       <button type="submit" class="boton boton--grande">Guardar</button>

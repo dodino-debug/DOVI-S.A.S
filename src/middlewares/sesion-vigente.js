@@ -19,6 +19,7 @@ module.exports = async function sesionVigente(req, res, next) {
 
     guardado.nombre = actual.nombre;
     guardado.rol = actual.rol;
+    guardado.esSupervisor = actual.es_supervisor;
     guardado.debeCambiarClave = actual.debe_cambiar_clave;
     next();
   } catch (error) {

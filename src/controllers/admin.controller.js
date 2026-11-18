@@ -1,14 +1,7 @@
 const Dashboard = require('../models/dashboard.model');
 const Solicitud = require('../models/solicitud.model');
-
-const ETIQUETA_ESTADO = {
-  pendiente_revision: 'Pendiente revisión',
-  aprobada: 'Aprobada',
-  rechazada: 'Rechazada',
-  reagendada: 'Reagendada',
-  en_proceso: 'En proceso',
-  completada: 'Completada'
-};
+const { ESTADO_SOLICITUD } = require('../config/estados');
+const { esId } = require('../utils/entrada');
 
 async function mostrarDashboard(req, res, next) {
   try {
@@ -31,12 +24,12 @@ async function datosDashboard(req, res, next) {
 
 async function verSolicitud(req, res, next) {
   try {
-    if (!/^\d{1,9}$/.test(req.params.id)) return next();
+    if (!esId(req.params.id)) return next();
     const solicitud = await Solicitud.buscarPorId(Number(req.params.id));
     if (!solicitud) return next();
     res.render('pages/admin/solicitud', {
       solicitud,
-      estadoEtiqueta: ETIQUETA_ESTADO[solicitud.estado] || solicitud.estado
+      estadoEtiqueta: ESTADO_SOLICITUD[solicitud.estado] || solicitud.estado
     });
   } catch (error) {
     next(error);

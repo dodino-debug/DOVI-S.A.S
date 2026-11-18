@@ -1,44 +1,18 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const Cliente = require('../models/cliente.model');
-const Predio = require('../models/predio.model');
+const Finca = require('../models/finca.model');
 const { claveTemporal } = require('../services/claves');
 const { ETIQUETA_ROL } = require('../config/roles');
+const { esId, texto, mensajesDeError } = require('../utils/entrada');
 
-const esId = (valor) => /^\d{1,9}$/.test(valor);
-const texto = (valor) => (typeof valor === 'string' ? valor.trim() : '');
+const MENSAJE_DUPLICADO = 'Ya existe un usuario con ese correo.';
 
-function leerDatos(body) {
-  return {
-    nombre: texto(body.nombre),
-    documento: texto(body.documento),
-    telefono: texto(body.telefono),
-    direccion: texto(body.direccion_contacto),
-    correo: texto(body.correo).toLowerCase()
-  };
-}
-
-function paraFormulario(id, datos, tieneAcceso) {
-  return {
-    id,
-    nombre: datos.nombre,
-    documento: datos.documento,
-    telefono: datos.telefono,
-    direccion_contacto: datos.direccion,
-    correo: datos.correo,
-    tiene_acceso: tieneAcceso
-  };
-}
-
-function mensajesDeError(resultado) {
-  return resultado.array({ onlyFirstError: true }).map((e) => e.msg);
-}
-
-function mensajeDuplicado(error) {
-  return error.constraint === 'idx_clientes_documento'
-    ? 'Ya existe un cliente con ese documento.'
-    : 'Ya existe un usuario con ese correo.';
-}
+const leerDatos = (body) => ({
+  nombre: texto(body.nombre),
+  correo: texto(body.correo).toLowerCase(),
+  telefono: texto(body.telefono)
+});
 
 function mostrarForm(res, estado, cliente, errores) {
   res.status(estado).render('pages/admin/clientes/form', { cliente, errores });
@@ -65,35 +39,23 @@ async function lista(req, res, next) {
 }
 
 function formularioNuevo(req, res) {
-  mostrarForm(
-    res,
-    200,
-    { id: null, nombre: '', documento: '', telefono: '', direccion_contacto: '', correo: '', tiene_acceso: false },
-    []
-  );
+  mostrarForm(res, 200, { id: null, nombre: '', correo: '', telefono: '' }, []);
 }
 
 async function crear(req, res, next) {
   const datos = leerDatos(req.body);
-  const cliente = paraFormulario(null, datos, false);
+  const cliente = { id: null, ...datos };
 
   try {
     const resultado = validationResult(req);
     if (!resultado.isEmpty()) return mostrarForm(res, 400, cliente, mensajesDeError(resultado));
 
-    let clave = null;
-    let hash = null;
-    if (datos.correo) {
-      clave = claveTemporal();
-      hash = await bcrypt.hash(clave, 12);
-    }
-
+    const clave = claveTemporal();
+    const hash = await bcrypt.hash(clave, 12);
     const id = await Cliente.crear({ ...datos, hash });
-
-    if (clave) return mostrarCredenciales(res, datos, clave, id);
-    res.redirigir(`/admin/clientes/${id}`, 'ok', 'Cliente creado. Ahora puedes registrar sus predios.');
+    mostrarCredenciales(res, datos, clave, id);
   } catch (error) {
-    if (error.code === '23505') return mostrarForm(res, 400, cliente, [mensajeDuplicado(error)]);
+    if (error.code === '23505') return mostrarForm(res, 400, cliente, [MENSAJE_DUPLICADO]);
     next(error);
   }
 }
@@ -103,7 +65,7 @@ async function detalle(req, res, next) {
     if (!esId(req.params.id)) return next();
     const cliente = await Cliente.buscarPorId(Number(req.params.id));
     if (!cliente) return next();
-    const predios = await Predio.listarPorCliente(cliente.id);
+    const predios = await Finca.listarPorCliente(cliente.id);
     res.render('pages/admin/clientes/detalle', { cliente, predios });
   } catch (error) {
     next(error);
@@ -125,32 +87,17 @@ async function actualizar(req, res, next) {
   try {
     if (!esId(req.params.id)) return next();
     const id = Number(req.params.id);
-
-    const actual = await Cliente.buscarPorId(id);
-    if (!actual) return next();
-
     const datos = leerDatos(req.body);
-    const cliente = paraFormulario(id, datos, actual.tiene_acceso);
+    const cliente = { id, ...datos };
 
     try {
       const resultado = validationResult(req);
       if (!resultado.isEmpty()) return mostrarForm(res, 400, cliente, mensajesDeError(resultado));
 
-      let clave = null;
-      let hash = null;
-      if (!actual.tiene_acceso && datos.correo) {
-        clave = claveTemporal();
-        hash = await bcrypt.hash(clave, 12);
-      }
-
-      const cambio = await Cliente.actualizar(id, { ...datos, hash });
-      if (!cambio) return next();
-
-      if (cambio.accesoCreado) return mostrarCredenciales(res, datos, clave, id);
+      if (!(await Cliente.actualizar(id, datos))) return next();
       res.redirigir(`/admin/clientes/${id}`, 'ok', 'Cliente actualizado.');
     } catch (error) {
-      if (error.code === '23505') return mostrarForm(res, 400, cliente, [mensajeDuplicado(error)]);
-      if (error.validacion) return mostrarForm(res, 400, cliente, [error.message]);
+      if (error.code === '23505') return mostrarForm(res, 400, cliente, [MENSAJE_DUPLICADO]);
       throw error;
     }
   } catch (error) {

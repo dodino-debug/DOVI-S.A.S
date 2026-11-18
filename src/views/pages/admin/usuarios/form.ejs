@@ -1,4 +1,4 @@
-<% var editando = !!cuenta.id; %>
+<% var editando = !!cuenta.id; var mostrarEmpleado = !editando || cuenta.rol === 'empleado'; %>
 <%- include('../../../partials/admin-inicio', {
   titulo: editando ? 'Editar usuario' : 'Nuevo usuario',
   activo: 'usuarios'
@@ -32,26 +32,36 @@
     <% } %>
 
     <label for="nombre">Nombre completo</label>
-    <input id="nombre" name="nombre" type="text" maxlength="120" value="<%= cuenta.nombre %>" required>
+    <input id="nombre" name="nombre" type="text" maxlength="150" value="<%= cuenta.nombre %>" required>
 
     <label for="correo">Correo electrónico</label>
-    <input id="correo" name="correo" type="email" maxlength="160" value="<%= cuenta.correo %>"
+    <input id="correo" name="correo" type="email" maxlength="100" value="<%= cuenta.correo %>"
            autocomplete="off" required>
 
-    <label for="telefono">Teléfono (opcional)</label>
-    <input id="telefono" name="telefono" type="tel" maxlength="30" value="<%= cuenta.telefono %>">
+    <label for="telefono">Teléfono (solo números, con + opcional)</label>
+    <input id="telefono" name="telefono" type="tel" maxlength="20" value="<%= cuenta.telefono %>"
+           inputmode="tel" required>
 
-    <div data-bloque-supervisor<%- cuenta.rol === 'empleado' ? '' : ' hidden' %>>
-      <label for="supervisor_id">Supervisor</label>
-      <select id="supervisor_id" name="supervisor_id">
-        <option value="">Sin supervisor</option>
-        <% supervisores.forEach(function (s) { %>
-          <option value="<%= s.id %>"<%- Number(cuenta.supervisor_id) === s.id ? ' selected' : '' %>>
-            <%= s.nombre %><%= s.activo ? '' : ' (inactivo)' %>
-          </option>
-        <% }) %>
-      </select>
-    </div>
+    <% if (mostrarEmpleado) { %>
+      <div data-bloque-es-supervisor<%- cuenta.rol === 'empleado' ? '' : ' hidden' %>>
+        <label class="formulario__check" for="es_supervisor">
+          <input id="es_supervisor" name="es_supervisor" type="checkbox"<%- cuenta.es_supervisor ? ' checked' : '' %>>
+          Es supervisor (puede tener empleados a cargo)
+        </label>
+      </div>
+
+      <div data-bloque-supervisor<%- (cuenta.rol === 'empleado' && !cuenta.es_supervisor) ? '' : ' hidden' %>>
+        <label for="supervisor_id">Supervisor</label>
+        <select id="supervisor_id" name="supervisor_id">
+          <option value="">Sin supervisor</option>
+          <% supervisores.forEach(function (s) { %>
+            <option value="<%= s.id %>"<%- Number(cuenta.supervisor_id) === s.id ? ' selected' : '' %>>
+              <%= s.nombre %><%= s.activo ? '' : ' (inactivo)' %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+    <% } %>
 
     <% if (!editando) { %>
       <p class="formulario__ayuda">

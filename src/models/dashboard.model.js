@@ -2,28 +2,28 @@ const pool = require('../config/db');
 
 const SQL_RESUMEN = `
   SELECT
-    (SELECT COUNT(*) FROM solicitudes WHERE estado = 'pendiente_revision')::int AS pendientes,
+    (SELECT COUNT(*) FROM solicitudes WHERE estado_solicitud = 'PENDIENTE')::int AS pendientes,
     (SELECT COUNT(*) FROM labores
-       WHERE fecha = (NOW() AT TIME ZONE 'America/Bogota')::date
-         AND estado IN ('pendiente', 'en_proceso'))::int AS labores_hoy,
-    (SELECT COUNT(DISTINCT le.empleado_id)
-       FROM labor_empleados le
-       JOIN labores l ON l.id = le.labor_id
-      WHERE l.estado = 'en_proceso')::int AS empleados_en_campo
+       WHERE fecha_programada = (NOW() AT TIME ZONE 'America/Bogota')::date
+         AND estado_labor IN ('PENDIENTE', 'EN PROCESO'))::int AS labores_hoy,
+    (SELECT COUNT(DISTINCT le.id_empleado)
+       FROM labor_empleado le
+       JOIN labores l ON l.id_labor = le.id_labor
+      WHERE l.estado_labor = 'EN PROCESO')::int AS empleados_en_campo
 `;
 
 const SQL_SOLICITUDES = `
-  SELECT s.id,
-         c.nombre  AS cliente,
-         p.nombre  AS predio,
-         sv.nombre AS labor,
-         TO_CHAR(s.fecha_deseada, 'YYYY-MM-DD') AS fecha_deseada
+  SELECT s.id_solicitud AS id,
+         c.nombre_completo AS cliente,
+         f.nombre_predio   AS predio,
+         sv.nombre_servicio AS labor,
+         TO_CHAR(s.fecha_esperada, 'YYYY-MM-DD') AS fecha_deseada
     FROM solicitudes s
-    JOIN clientes  c  ON c.id  = s.cliente_id
-    JOIN predios   p  ON p.id  = s.predio_id
-    JOIN servicios sv ON sv.id = s.servicio_id
-   WHERE s.estado = 'pendiente_revision'
-   ORDER BY s.creado_en DESC, s.id DESC
+    JOIN usuarios  c  ON c.id_usuario  = s.id_cliente
+    JOIN fincas    f  ON f.id_finca    = s.id_finca
+    JOIN servicios sv ON sv.id_servicio = s.id_servicio
+   WHERE s.estado_solicitud = 'PENDIENTE'
+   ORDER BY s.fecha_creacion DESC, s.id_solicitud DESC
    LIMIT 10
 `;
 

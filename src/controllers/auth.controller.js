@@ -38,6 +38,7 @@ async function procesarLogin(req, res, next) {
         id: usuario.id,
         nombre: usuario.nombre,
         rol: usuario.rol,
+        esSupervisor: usuario.es_supervisor,
         debeCambiarClave: usuario.debe_cambiar_clave
       };
       req.session.save((errorGuardar) => {

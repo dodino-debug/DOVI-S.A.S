@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const { requerirRol } = require('../middlewares/auth');
 
+// Provisional: se reemplaza por los paneles reales del empleado (que incluye al supervisor) y del cliente.
 const paneles = [
-  ['/supervisor', 'supervisor', 'Módulo Supervisor'],
   ['/empleado', 'empleado', 'Módulo Empleado'],
   ['/cliente', 'cliente', 'Portal Clientes']
 ];

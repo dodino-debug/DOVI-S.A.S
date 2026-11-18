@@ -9,7 +9,7 @@
 </section>
 
 <form class="buscador" method="GET" action="/admin/clientes">
-  <label>Buscar por nombre, documento o correo
+  <label>Buscar por nombre, correo o teléfono
     <input type="search" name="q" value="<%= q %>" maxlength="100">
   </label>
   <button type="submit" class="boton boton--secundario">Buscar</button>
@@ -20,11 +20,11 @@
   <div class="tabla-scroll">
     <table style="min-width: 980px;">
       <colgroup>
-        <col style="width: 22%"><col style="width: 20%"><col style="width: 14%">
+        <col style="width: 24%"><col style="width: 16%"><col style="width: 16%">
         <col style="width: 9%"><col style="width: 11%"><col style="width: 24%">
       </colgroup>
       <thead>
-        <tr><th>Cliente</th><th>Contacto</th><th>Acceso</th><th>Predios</th><th>Solicitudes</th><th>Acciones</th></tr>
+        <tr><th>Cliente</th><th>Teléfono</th><th>Estado</th><th>Predios</th><th>Solicitudes</th><th>Acciones</th></tr>
       </thead>
       <tbody>
         <% if (clientes.length === 0) { %>
@@ -35,20 +35,18 @@
           <tr>
             <td class="cliente">
               <%= c.nombre %>
-              <% if (c.documento) { %><span class="dato-secundario"><%= c.documento %></span><% } %>
+              <span class="dato-secundario"><%= c.correo %></span>
             </td>
+            <td><%= c.telefono %></td>
             <td>
-              <%= c.telefono || '—' %>
-              <% if (c.correo) { %><span class="dato-secundario"><%= c.correo %></span><% } %>
-            </td>
-            <td>
-              <% if (!c.tiene_acceso) { %>
-                <span class="insignia insignia--off">SIN ACCESO</span>
-              <% } else if (c.acceso_activo) { %>
-                <span class="insignia insignia--ok">CON ACCESO</span>
-              <% } else { %>
-                <span class="insignia insignia--aviso">ACCESO INACTIVO</span>
-              <% } %>
+              <div class="acciones">
+                <span class="insignia <%= c.activo ? 'insignia--ok' : 'insignia--off' %>">
+                  <%= c.activo ? 'ACTIVO' : 'INACTIVO' %>
+                </span>
+                <% if (c.debe_cambiar_clave) { %>
+                  <span class="insignia insignia--aviso">CLAVE TEMPORAL</span>
+                <% } %>
+              </div>
             </td>
             <td><%= c.predios %></td>
             <td><%= c.solicitudes %></td>

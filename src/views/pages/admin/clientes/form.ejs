@@ -24,31 +24,23 @@
       </ul>
     <% } %>
 
-    <label for="nombre">Nombre o razón social</label>
-    <input id="nombre" name="nombre" type="text" maxlength="160" value="<%= cliente.nombre %>" required>
+    <label for="nombre">Nombre completo o razón social</label>
+    <input id="nombre" name="nombre" type="text" maxlength="150" value="<%= cliente.nombre %>" required>
 
-    <label for="documento">Documento: cédula o NIT (opcional)</label>
-    <input id="documento" name="documento" type="text" maxlength="30" value="<%= cliente.documento %>"
-           autocomplete="off">
+    <label for="correo">Correo electrónico (con él ingresa a la plataforma)</label>
+    <input id="correo" name="correo" type="email" maxlength="100" value="<%= cliente.correo %>"
+           autocomplete="off" required>
 
-    <label for="telefono">Teléfono (opcional)</label>
-    <input id="telefono" name="telefono" type="tel" maxlength="30" value="<%= cliente.telefono %>">
+    <label for="telefono">Teléfono (solo números, con + opcional)</label>
+    <input id="telefono" name="telefono" type="tel" maxlength="20" value="<%= cliente.telefono %>"
+           inputmode="tel" required>
 
-    <label for="direccion_contacto">Dirección de contacto (opcional)</label>
-    <input id="direccion_contacto" name="direccion_contacto" type="text" maxlength="200"
-           value="<%= cliente.direccion_contacto %>">
-
-    <label for="correo">
-      <%= cliente.tiene_acceso ? 'Correo electrónico (acceso a la plataforma)' : 'Correo electrónico (opcional)' %>
-    </label>
-    <input id="correo" name="correo" type="email" maxlength="160" value="<%= cliente.correo %>"
-           autocomplete="off"<%- cliente.tiene_acceso ? ' required' : '' %>>
     <p class="formulario__ayuda">
-      <% if (cliente.tiene_acceso) { %>
-        Este cliente ya tiene acceso. Si cambias el correo, deberá usar el nuevo para ingresar.
+      <% if (editando) { %>
+        Si cambias el correo, el cliente deberá usar el nuevo para ingresar.
       <% } else { %>
-        Si escribes un correo, se crea el acceso del cliente con una contraseña temporal que verás una
-        sola vez. Si lo dejas vacío, el cliente queda solo en el directorio.
+        Se crea el acceso del cliente con una contraseña temporal que verás una sola vez al guardar.
+        El cliente deberá cambiarla en su primer ingreso.
       <% } %>
     </p>
 

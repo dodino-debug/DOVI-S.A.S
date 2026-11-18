@@ -24,14 +24,14 @@
     <% } %>
 
     <label for="nombre">Nombre del predio</label>
-    <input id="nombre" name="nombre" type="text" maxlength="160" value="<%= predio.nombre %>" required>
+    <input id="nombre" name="nombre" type="text" maxlength="100" value="<%= predio.nombre %>" required>
 
-    <label for="ubicacion">Ubicación (vereda, municipio y referencias)</label>
-    <textarea id="ubicacion" name="ubicacion" rows="3" maxlength="500" required><%= predio.ubicacion %></textarea>
+    <label for="ubicacion">Ubicación (vereda, corregimiento o coordenadas)</label>
+    <textarea id="ubicacion" name="ubicacion" rows="3" maxlength="255" required><%= predio.ubicacion %></textarea>
 
-    <label for="area">Área en hectáreas (opcional)</label>
-    <input id="area" name="area" type="text" inputmode="decimal" maxlength="10"
-           value="<%= predio.area %>" placeholder="Por ejemplo 12.5">
+    <label for="area">Área en hectáreas</label>
+    <input id="area" name="area" type="text" inputmode="decimal" maxlength="11"
+           value="<%= predio.area %>" placeholder="Por ejemplo 12.5" required>
 
     <div class="formulario__acciones">
       <button type="submit" class="boton boton--grande"><%= editando ? 'Guardar' : 'Crear predio' %></button>

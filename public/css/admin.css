@@ -321,3 +321,6 @@ body.admin::before {
   padding-right: 24px;
 }
 .tarjeta__cabecera h2 { padding-right: 0; }
+
+.formulario .formulario__check { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; font-weight: 400; }
+.formulario input[type="checkbox"] { width: auto; margin: 0; }

@@ -10,23 +10,17 @@
 
 <section class="tarjeta" style="margin-top: 34px;">
   <dl class="detalle">
-    <dt>Documento</dt><dd><%= cliente.documento || '—' %></dd>
-    <dt>Teléfono</dt><dd><%= cliente.telefono || '—' %></dd>
-    <dt>Dirección de contacto</dt><dd><%= cliente.direccion_contacto || '—' %></dd>
-    <dt>Acceso a la plataforma</dt>
+    <dt>Correo (acceso)</dt>
     <dd>
-      <% if (!cliente.tiene_acceso) { %>
-        <span class="insignia insignia--off">SIN ACCESO</span>
-        Se puede crear editando el cliente y agregando un correo.
-      <% } else { %>
-        <%= cliente.correo %>
-        <span class="insignia <%= cliente.acceso_activo ? 'insignia--ok' : 'insignia--aviso' %>">
-          <%= cliente.acceso_activo ? 'ACTIVO' : 'INACTIVO' %>
-        </span>
-        <span class="dato-secundario">Activar, desactivar o restablecer la clave se hace desde
-          <a class="enlace-volver" href="/admin/usuarios">Usuarios</a>.</span>
-      <% } %>
+      <%= cliente.correo %>
+      <span class="insignia <%= cliente.activo ? 'insignia--ok' : 'insignia--off' %>">
+        <%= cliente.activo ? 'ACTIVO' : 'INACTIVO' %>
+      </span>
+      <% if (cliente.debe_cambiar_clave) { %><span class="insignia insignia--aviso">CLAVE TEMPORAL</span><% } %>
+      <span class="dato-secundario">Activar, desactivar o restablecer la clave se hace desde
+        <a class="enlace-volver" href="/admin/usuarios">Usuarios</a>.</span>
     </dd>
+    <dt>Teléfono</dt><dd><%= cliente.telefono %></dd>
     <dt>Registrado</dt><dd><%= cliente.creado %></dd>
   </dl>
 </section>
@@ -52,7 +46,7 @@
           <tr>
             <td class="cliente"><%= p.nombre %></td>
             <td><%= p.ubicacion %></td>
-            <td><%= p.area_hectareas ? Number(p.area_hectareas).toLocaleString('es-CO', { maximumFractionDigits: 2 }) + ' ha' : '—' %></td>
+            <td><%= Number(p.area_hectareas).toLocaleString('es-CO', { maximumFractionDigits: 2 }) %> ha</td>
             <td><%= p.solicitudes %></td>
             <td>
               <span class="insignia <%= p.activo ? 'insignia--ok' : 'insignia--off' %>">

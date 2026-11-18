@@ -3,23 +3,47 @@ const { validationResult } = require('express-validator');
 const Usuario = require('../models/usuario.model');
 const { claveTemporal } = require('../services/claves');
 const { ETIQUETA_ROL } = require('../config/roles');
+const { esId, texto, mensajesDeError } = require('../utils/entrada');
 
-const ROLES = ['admin', 'supervisor', 'empleado', 'cliente'];
-const ROLES_CREABLES = ['admin', 'supervisor', 'empleado'];
-const MENSAJE_CLIENTE = 'Los datos de los clientes se editarán desde el módulo de Clientes.';
-
-const esId = (valor) => /^\d{1,9}$/.test(valor);
-const texto = (valor) => (typeof valor === 'string' ? valor.trim() : '');
+const ROLES_FILTRO = ['admin', 'empleado', 'supervisor', 'cliente'];
+const ROLES_CREABLES = ['admin', 'empleado'];
+const MENSAJE_CLIENTE = 'Los datos de los clientes se editan desde el módulo de Clientes.';
+const MENSAJE_DUPLICADO = 'Ya existe un usuario con ese correo.';
 
 function leerDatos(body) {
+  const rol = texto(body.rol);
   return {
     nombre: texto(body.nombre),
     correo: texto(body.correo).toLowerCase(),
     telefono: texto(body.telefono),
-    rol: texto(body.rol),
+    rol,
+    esSupervisor: body.es_supervisor === 'on',
     supervisorId: /^\d{1,9}$/.test(String(body.supervisor_id)) ? Number(body.supervisor_id) : null
   };
 }
+
+// Reglas del supervisor: solo los empleados pueden serlo y un supervisor no tiene supervisor.
+function normalizar(datos, rolFijo) {
+  const rol = rolFijo || datos.rol;
+  const esEmpleado = rol === 'empleado';
+  const esSupervisor = esEmpleado && datos.esSupervisor;
+  return {
+    ...datos,
+    rol,
+    esSupervisor,
+    supervisorId: esEmpleado && !esSupervisor ? datos.supervisorId : null
+  };
+}
+
+const paraFormulario = (id, d) => ({
+  id,
+  nombre: d.nombre,
+  correo: d.correo,
+  telefono: d.telefono,
+  rol: d.rol,
+  es_supervisor: d.esSupervisor,
+  supervisor_id: d.supervisorId
+});
 
 async function mostrarForm(res, estado, cuenta, errores) {
   const supervisores = await Usuario.listarSupervisores(cuenta.supervisor_id || null);
@@ -34,26 +58,21 @@ async function mostrarForm(res, estado, cuenta, errores) {
 
 function mostrarCredenciales(res, cuenta, clave, accion) {
   res.set('Cache-Control', 'no-store');
-  res.render('pages/admin/usuarios/credenciales', {
-    cuenta,
-    clave,
-    accion,
-    etiquetaRol: ETIQUETA_ROL
-  });
+  res.render('pages/admin/usuarios/credenciales', { cuenta, clave, accion, etiquetaRol: ETIQUETA_ROL });
 }
 
 async function lista(req, res, next) {
   try {
-    const rol = ROLES.includes(req.query.rol) ? req.query.rol : null;
+    const rol = ROLES_FILTRO.includes(req.query.rol) ? req.query.rol : null;
     const estado = req.query.estado === 'activos' ? 'activos'
       : req.query.estado === 'inactivos' ? 'inactivos' : '';
     const activo = estado === 'activos' ? true : estado === 'inactivos' ? false : null;
 
-    res.render('pages/admin/usuarios/listas', {
+    res.render('pages/admin/usuarios/lista', {
       usuarios: await Usuario.listar({ rol, activo }),
       filtros: { rol: rol || '', estado },
       etiquetaRol: ETIQUETA_ROL,
-      roles: ROLES
+      roles: ROLES_FILTRO
     });
   } catch (error) {
     next(error);
@@ -65,7 +84,7 @@ async function formularioNuevo(req, res, next) {
     await mostrarForm(
       res,
       200,
-      { id: null, nombre: '', correo: '', telefono: '', rol: 'empleado', supervisor_id: null },
+      { id: null, nombre: '', correo: '', telefono: '', rol: 'empleado', es_supervisor: false, supervisor_id: null },
       []
     );
   } catch (error) {
@@ -74,25 +93,25 @@ async function formularioNuevo(req, res, next) {
 }
 
 async function crear(req, res, next) {
-  const datos = leerDatos(req.body);
-  const cuenta = { id: null, ...datos, supervisor_id: datos.supervisorId };
+  const datos = normalizar(leerDatos(req.body));
+  const cuenta = paraFormulario(null, datos);
 
   try {
     const resultado = validationResult(req);
-    if (!resultado.isEmpty()) {
-      const errores = resultado.array({ onlyFirstError: true }).map((e) => e.msg);
-      return await mostrarForm(res, 400, cuenta, errores);
-    }
+    if (!resultado.isEmpty()) return await mostrarForm(res, 400, cuenta, mensajesDeError(resultado));
 
     const clave = claveTemporal();
     const hash = await bcrypt.hash(clave, 12);
     await Usuario.crear({ ...datos, hash });
-    mostrarCredenciales(res, cuenta, clave, 'creada');
+    mostrarCredenciales(
+      res,
+      { nombre: datos.nombre, correo: datos.correo, rol: datos.esSupervisor ? 'supervisor' : datos.rol },
+      clave,
+      'creada'
+    );
   } catch (error) {
     try {
-      if (error.code === '23505') {
-        return await mostrarForm(res, 400, cuenta, ['Ya existe un usuario con ese correo.']);
-      }
+      if (error.code === '23505') return await mostrarForm(res, 400, cuenta, [MENSAJE_DUPLICADO]);
       if (error.validacion) return await mostrarForm(res, 400, cuenta, [error.message]);
     } catch (errorInterno) {
       return next(errorInterno);
@@ -122,22 +141,17 @@ async function actualizar(req, res, next) {
     if (!actual) return next();
     if (actual.rol === 'cliente') return res.redirigir('/admin/usuarios', 'error', MENSAJE_CLIENTE);
 
-    const datos = leerDatos(req.body);
-    const cuenta = { id, ...datos, rol: actual.rol, supervisor_id: datos.supervisorId };
+    const datos = normalizar(leerDatos(req.body), actual.rol);
+    const cuenta = paraFormulario(id, datos);
 
     try {
       const resultado = validationResult(req);
-      if (!resultado.isEmpty()) {
-        const errores = resultado.array({ onlyFirstError: true }).map((e) => e.msg);
-        return await mostrarForm(res, 400, cuenta, errores);
-      }
+      if (!resultado.isEmpty()) return await mostrarForm(res, 400, cuenta, mensajesDeError(resultado));
 
       if (!(await Usuario.actualizar(id, datos))) return next();
       res.redirigir('/admin/usuarios', 'ok', 'Usuario actualizado.');
     } catch (error) {
-      if (error.code === '23505') {
-        return await mostrarForm(res, 400, cuenta, ['Ya existe un usuario con ese correo.']);
-      }
+      if (error.code === '23505') return await mostrarForm(res, 400, cuenta, [MENSAJE_DUPLICADO]);
       if (error.validacion) return await mostrarForm(res, 400, cuenta, [error.message]);
       throw error;
     }
@@ -197,7 +211,12 @@ async function restablecerClave(req, res, next) {
     const cuenta = await Usuario.restablecerClave(id, hash);
     if (!cuenta) return next();
 
-    mostrarCredenciales(res, cuenta, clave, 'restablecida');
+    mostrarCredenciales(
+      res,
+      { nombre: cuenta.nombre, correo: cuenta.correo, rol: cuenta.rol_visible },
+      clave,
+      'restablecida'
+    );
   } catch (error) {
     next(error);
   }
