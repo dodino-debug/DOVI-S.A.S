@@ -287,7 +287,8 @@ button.boton { border: 0; font-family: inherit; cursor: pointer; }
 }
 
 /* Fondo común: capa fija detrás del contenido */
-body.admin::before {
+body.admin::before,
+body.portal-cliente::before {
   content: "";
   position: fixed;
   inset: 0;

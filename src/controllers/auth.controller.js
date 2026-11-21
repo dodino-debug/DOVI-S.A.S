@@ -52,7 +52,7 @@ async function procesarLogin(req, res, next) {
 }
 
 function mostrarCambioClave(req, res) {
-  res.render('pages/auth/cambiar-clave', {
+  res.render('pages/auth/cambiar-claves', {
     error: null,
     obligatorio: req.session.usuario.debeCambiarClave
   });
@@ -61,7 +61,7 @@ function mostrarCambioClave(req, res) {
 async function procesarCambioClave(req, res, next) {
   const obligatorio = req.session.usuario.debeCambiarClave;
   const responder = (estado, error) =>
-    res.status(estado).render('pages/auth/cambiar-clave', { error, obligatorio });
+    res.status(estado).render('pages/auth/cambiar-claves', { error, obligatorio });
 
   try {
     if (!validationResult(req).isEmpty()) {

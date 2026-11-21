@@ -47,4 +47,13 @@ async function cambiarEstado(id, activo) {
   return rows[0] || null;
 }
 
-module.exports = { listar, buscarPorId, crear, actualizar, cambiarEstado };
+async function listarActivos() {
+  const { rows } = await pool.query(
+    `SELECT id_servicio AS id, nombre_servicio AS nombre, descripcion
+       FROM servicios WHERE estado = 'ACTIVO'
+      ORDER BY nombre_servicio, id_servicio`
+  );
+  return rows;
+}
+
+module.exports = { listar, buscarPorId, crear, actualizar, cambiarEstado, listarActivos };

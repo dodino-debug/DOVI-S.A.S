@@ -1,4 +1,5 @@
 <%- include('../../../partials/admin-inicio', { titulo: 'Contraseña temporal', activo: 'usuarios' }) %>
+<% const destino = locals.volver || { href: '/admin/usuarios', texto: 'Volver a usuarios' }; %>
 
 <section class="encabezado">
   <h1>Cuenta <%= accion === 'creada' ? 'creada' : 'actualizada' %></h1>
@@ -31,7 +32,5 @@
     <a class="boton boton--grande" href="<%= destino.href %>"><%= destino.texto %></a>
   </div>
 </section>
-
-<% var destino = locals.volver || { href: '/admin/usuarios', texto: 'Volver a usuarios' }; %>
 
 <%- include('../../../partials/admin-fin') %>

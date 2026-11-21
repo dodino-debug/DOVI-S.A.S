@@ -1,16 +1,17 @@
 const router = require('express').Router();
 const { requerirRol } = require('../middlewares/auth');
+const portal = require('../controllers/portal-cliente.controller');
+const { validarSolicitud } = require('../validators/solicitud.validator');
 
-// Provisional: se reemplaza por los paneles reales del empleado (que incluye al supervisor) y del cliente.
-const paneles = [
-  ['/empleado', 'empleado', 'Módulo Empleado'],
-  ['/cliente', 'cliente', 'Portal Clientes']
-];
+const soloCliente = requerirRol('cliente');
 
-paneles.forEach(([ruta, rol, titulo]) => {
-  router.get(ruta, requerirRol(rol), (req, res) => {
-    res.render('pages/panel-provisional', { titulo });
-  });
+router.get('/cliente', soloCliente, portal.mostrarServicios);
+router.get('/cliente/solicitar', soloCliente, portal.mostrarFormulario);
+router.get('/cliente/solicitudes', soloCliente, portal.mostrarSolicitudes);
+router.post('/cliente/solicitudes', soloCliente, validarSolicitud, portal.crearSolicitud);
+
+router.get('/empleado', requerirRol('empleado'), (req, res) => {
+  res.render('pages/panel-provisional', { titulo: 'Módulo Empleado' });
 });
 
 module.exports = router;

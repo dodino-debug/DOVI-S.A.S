@@ -1,0 +1,81 @@
+body.portal-cliente {
+  margin: 0;
+  min-height: 100vh;
+  isolation: isolate;
+  font-family: system-ui, sans-serif;
+  color: #303a30;
+  background: #ecf1eb;
+}
+
+.portal-barra {
+  background: #fff;
+  border-bottom: 1px solid #d8e2d4;
+}
+
+.portal-barra__interior,
+.portal-barra nav,
+.portal-marca {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+
+.portal-barra__interior {
+  justify-content: space-between;
+  padding-block: 12px;
+}
+
+.portal-barra a {
+  color: #2d5a27;
+}
+
+.portal-barra a[aria-current="page"] {
+  font-weight: 700;
+  text-underline-offset: 4px;
+}
+
+.portal-marca {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.portal {
+  padding-block: 24px 48px;
+}
+
+.portal section {
+  margin-top: 28px;
+}
+
+.portal-servicios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.portal-servicios li {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #d8e2d4;
+  border-radius: 8px;
+}
+
+.portal-servicios h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.portal-servicios p {
+  margin: 8px 0 0;
+}
+
+.portal-servicios .boton {
+  margin-top: 12px;
+}
+
+.portal-aviso {
+  margin: 0 24px 16px;
+}
