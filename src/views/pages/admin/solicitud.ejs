@@ -12,13 +12,58 @@
     <dt>Predio</dt><dd><%= solicitud.predio %></dd>
     <dt>Ubicación</dt><dd><%= solicitud.ubicacion %></dd>
     <dt>Labor solicitada</dt><dd><%= solicitud.servicio %></dd>
-    <dt>Fecha deseada</dt><dd><%= solicitud.fecha_deseada %></dd>
+    <dt><%= solicitud.estado === 'APROBADA' ? 'Fecha aprobada' : 'Fecha deseada' %></dt><dd><%= solicitud.fecha_deseada %></dd>
     <dt>Detalles</dt><dd class="detalle__texto"><%= solicitud.detalles || 'Sin detalles' %></dd>
     <dt>Registrada</dt><dd><%= solicitud.creada %></dd>
+    <% if (solicitud.nota_admin) { %>
+      <dt><%= solicitud.estado === 'RECHAZADA' ? 'Motivo del rechazo' : 'Nota administrativa' %></dt>
+      <dd class="detalle__texto"><%= solicitud.nota_admin %></dd>
+    <% } %>
   </dl>
-  <div class="tarjeta__nota">
-    <span>Aprobar, rechazar, reagendar y programar la labor se habilitan en el siguiente paso.</span>
-  </div>
 </section>
+
+<% if (errores.length) { %>
+  <ul class="flash flash--error" role="alert">
+    <% for (const error of errores) { %><li><%= error %></li><% } %>
+  </ul>
+<% } %>
+
+<% if (solicitud.estado === 'PENDIENTE') { %>
+  <section class="tarjeta formulario">
+    <h2>Resolver solicitud</h2>
+    <form method="post" action="/admin/solicitudes/<%= solicitud.id %>/aprobar">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="boton">Aprobar</button>
+    </form>
+    <form method="post" action="/admin/solicitudes/<%= solicitud.id %>/reagendar">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="fecha">Nueva fecha</label>
+      <input type="date" id="fecha" name="fecha" min="<%= fechaMinima %>" value="<%= formulario.fecha || '' %>" required>
+      <button type="submit" class="boton">Reagendar y aprobar</button>
+    </form>
+    <form method="post" action="/admin/solicitudes/<%= solicitud.id %>/rechazar">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="motivo">Motivo del rechazo</label>
+      <textarea id="motivo" name="motivo" maxlength="255" rows="3" required><%= formulario.motivo || '' %></textarea>
+      <button type="submit" class="boton boton--secundario">Rechazar</button>
+    </form>
+  </section>
+<% } %>
+
+<% if (historial.length) { %>
+  <section class="tarjeta formulario">
+    <h2>Historial de decisiones</h2>
+    <ul>
+      <% for (const evento of historial) { %>
+        <li>
+          <%= evento.registrada %> · <%= evento.accion === 'REAGENDADA' ? 'Reagendada y aprobada' : evento.accion === 'APROBADA' ? 'Aprobada' : 'Rechazada' %>
+          <% if (evento.accion === 'REAGENDADA') { %>
+            (<%= evento.fecha_anterior %> → <%= evento.fecha_nueva %>)
+          <% } %>
+        </li>
+      <% } %>
+    </ul>
+  </section>
+<% } %>
 
 <%- include('../../partials/admin-fin') %>

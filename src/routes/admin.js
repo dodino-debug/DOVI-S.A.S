@@ -8,12 +8,16 @@ const { validarServicio } = require('../validators/servicio.validator');
 const { validarUsuarioNuevo, validarUsuarioEdicion } = require('../validators/usuario.validator');
 const { validarCliente } = require('../validators/cliente.validator');
 const { validarPredio } = require('../validators/predio.validator');
+const { validarRechazo, validarFecha } = require('../validators/solicitud.validator');
 const { requerirRol, requerirRolApi } = require('../middlewares/auth');
 
 const soloAdmin = requerirRol('admin');
 
 router.get('/admin', soloAdmin, admin.mostrarDashboard);
 router.get('/admin/solicitudes/:id', soloAdmin, admin.verSolicitud);
+router.post('/admin/solicitudes/:id/aprobar', soloAdmin, admin.resolverSolicitud('APROBADA'));
+router.post('/admin/solicitudes/:id/rechazar', soloAdmin, validarRechazo, admin.resolverSolicitud('RECHAZADA'));
+router.post('/admin/solicitudes/:id/reagendar', soloAdmin, validarFecha, admin.resolverSolicitud('REAGENDADA'));
 router.get('/admin/reportes', soloAdmin, admin.reportes);
 
 router.get('/admin/clientes', soloAdmin, clientes.lista);

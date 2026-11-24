@@ -49,4 +49,45 @@ async function crearPendiente(clienteId, { predio, servicio, fecha, detalles }) 
   return rowCount > 0;
 }
 
-module.exports = { buscarPorId, listarPorCliente, crearPendiente };
+async function listarHistorial(id) {
+  const { rows } = await pool.query(
+    `SELECT accion,
+            TO_CHAR(fecha_anterior, 'YYYY-MM-DD') AS fecha_anterior,
+            TO_CHAR(fecha_nueva, 'YYYY-MM-DD') AS fecha_nueva,
+            TO_CHAR(fecha_registro AT TIME ZONE 'America/Bogota', 'YYYY-MM-DD HH24:MI') AS registrada
+       FROM solicitud_historial
+      WHERE id_solicitud = $1
+      ORDER BY id_historial DESC`,
+    [id]
+  );
+  return rows;
+}
+
+async function resolver(id, adminId, accion, { fecha, motivo }) {
+  const { rowCount } = await pool.query(
+    `WITH pendiente AS (
+       SELECT id_solicitud, fecha_esperada
+         FROM solicitudes
+        WHERE id_solicitud = $1 AND estado_solicitud = 'PENDIENTE'
+          AND ($3 <> 'REAGENDADA' OR (
+            $4::date <> fecha_esperada
+            AND $4::date >= (NOW() AT TIME ZONE 'America/Bogota')::date
+          ))
+        FOR UPDATE
+     ), resuelta AS (
+       UPDATE solicitudes s
+          SET estado_solicitud = CASE WHEN $3 = 'RECHAZADA' THEN 'RECHAZADA' ELSE 'APROBADA' END,
+              fecha_esperada = COALESCE($4::date, p.fecha_esperada),
+              nota_admin = $5
+         FROM pendiente p
+        WHERE s.id_solicitud = p.id_solicitud
+       RETURNING s.id_solicitud, p.fecha_esperada AS fecha_anterior, s.fecha_esperada AS fecha_nueva
+     )
+     INSERT INTO solicitud_historial (id_solicitud, id_admin, accion, fecha_anterior, fecha_nueva)
+     SELECT id_solicitud, $2, $3, fecha_anterior, fecha_nueva FROM resuelta`,
+    [id, adminId, accion, fecha, motivo]
+  );
+  return rowCount > 0;
+}
+
+module.exports = { buscarPorId, listarPorCliente, crearPendiente, listarHistorial, resolver };

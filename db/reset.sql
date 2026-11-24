@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS
   empleados_supervisor,
   labor_empleado,
   labores,
+  solicitud_historial,
   solicitudes,
   fincas,
   predios,

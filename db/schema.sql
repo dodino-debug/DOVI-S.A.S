@@ -81,6 +81,19 @@ CREATE TABLE IF NOT EXISTS solicitudes (
 );
 CREATE INDEX IF NOT EXISTS idx_solicitudes_estado ON solicitudes (estado_solicitud, fecha_creacion DESC);
 
+-- Historial de decisiones administrativas. Reagendar deja la solicitud aprobada.
+CREATE TABLE IF NOT EXISTS solicitud_historial (
+  id_historial   SERIAL PRIMARY KEY,
+  id_solicitud   INTEGER NOT NULL REFERENCES solicitudes(id_solicitud) ON DELETE CASCADE,
+  id_admin       INTEGER NOT NULL REFERENCES usuarios(id_usuario),
+  accion         VARCHAR(20) NOT NULL CHECK (accion IN ('APROBADA', 'RECHAZADA', 'REAGENDADA')),
+  fecha_anterior DATE NOT NULL,
+  fecha_nueva    DATE NOT NULL,
+  fecha_registro TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_solicitud_historial_solicitud
+  ON solicitud_historial (id_solicitud, id_historial DESC);
+
 -- ===== Labores =====
 CREATE TABLE IF NOT EXISTS labores (
   id_labor          SERIAL PRIMARY KEY,

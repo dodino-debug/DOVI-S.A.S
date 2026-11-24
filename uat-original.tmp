@@ -1,0 +1,210 @@
+Desarrollo de una plataforma web para la gestión y prestación de servicios agrícolas en la empresa DOVI S.A.S 
+ 
+ 
+ 
+ 
+INTEGRANTES:
+Jhojan Andrés Dodino Villegas
+Helena Carolina Serrano Rubio
+Kelly Johana Criado
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+DOCENTE:
+Esp. Mg. Erney A. Ramírez Camargo
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+ 
+UNIVERSIDAD POPULAR DEL CESAR SECCIONAL AGUACHICA
+FACULTAD DE INGENIERÍAS
+2026 
+Planteamiento Del problema
+ 
+DOVI S.A.S. es una empresa dedicada a la prestación de servicios agrícolas, entre los que se encuentran la cosecha de palma de aceite, la siembra, el mantenimiento y la asistencia de cultivos. Actualmente, la gestión de estos servicios se realiza principalmente de manera presencial y mediante llamadas telefónicas, WhatsApp y comunicación directa, sin contar con una herramienta tecnológica que organice y muestre la información de la empresa.
+ 
+De acuerdo con la entrevista realizada y el sondeo personal, se identificó que la empresa no cuenta actualmente con un registro formal de sus clientes y presenta dificultades para organizar y realizar seguimiento a las solicitudes, servicios pendientes y labores programadas. Además, los clientes no se sienten totalmente satisfechos porque deben comunicarse directamente con la empresa para conocer los servicios disponibles o consultar el estado de una solicitud y muchas veces esto resulta muy complicado de lograr, desde otro Ángulo notamos que los empleados reciben la información de sus labores principalmente por WhatsApp o de manera personal.
+ 
+Esta situación dificulta la organización y el seguimiento de los servicios agrícolas, especialmente cuando existen varios compromisos y labores que deben coordinarse. Por lo anterior, surge la necesidad de contar con una herramienta que permita centralizar y gestionar la información relacionada con los clientes, servicios, solicitudes y labores programadas de DOVI S.A.S.
+
+Justificación
+ 
+El desarrollo de una plataforma web para DOVI S.A.S. Se plantea como una alternativa para mejorar la gestión de los servicios agrícolas y facilitar el acceso a la información relacionada con clientes, servicios y solicitudes. La herramienta permitirá dar mejor uso a la información que actualmente se maneja mediante llamadas, WhatsApp y comunicación presencial, proporcionando un medio organizado para consultar y gestionar los procesos relacionados con la prestación de los servicios.
+ 
+La plataforma beneficiará principalmente a la empresa, al facilitar el seguimiento de los servicios pendientes, las solicitudes y las labores programadas. De igual manera, permitirá a los clientes consultar información sobre los servicios disponibles y realizar un seguimiento de sus solicitudes, reduciendo la necesidad de comunicarse directamente con el personal para obtener dicha información. Los empleados también podrán consultar desde sus teléfonos la información relacionada con las labores que les sean asignadas.
+ 
+Desde el punto de vista tecnológico, el proyecto permitirá aplicar los conocimientos adquiridos en el área de Ingeniería de Sistemas mediante el análisis de requisitos, diseño de interfaces y codificación de una solución orientada a una necesidad real de una empresa. De esta manera, el proyecto busca aportar una herramienta que se ajuste a las necesidades identificadas en DOVI S.A.S. y que pueda contribuir a una gestión más organizada de sus servicios agrícolas.
+ 
+Pregunta central
+ 
+¿Cómo contribuiría el desarrollo de una plataforma web a la gestión y prestación de los servicios agrícolas de la empresa DOVI S.A.S.?
+
+Objetivo General
+ 
+Desarrollar una plataforma web para la gestión y prestación de servicios agrícolas en la empresa DOVI S.A.S.
+Objetivo Específicos
+ 
+Determinar los requisitos funcionales y no funcionales de la plataforma web, de acuerdo con las necesidades de gestión y prestación de servicios agrícolas de la empresa DOVI S.A.S.
+Diseñar las vistas y la estructura de navegación de la plataforma web, de acuerdo con los requisitos establecidos.
+Codificar las funcionalidades de la plataforma web, mediante el desarrollo del código backend necesario para la gestión de los servicios agrícolas.
+Realizar pruebas funcionales de la plataforma web para verificar el correcto funcionamiento y cumplimiento de los requisitos funcionales y no funcionales establecidos.
+ 
+Delimitación del problema
+ 
+Este proyecto se va a limitar al desarrollo de una plataforma web orientada a la gestión y prestación de los servicios agrícolas de la empresa DOVI S.A.S., que se desarrollara dentro del tiempo establecido a 18 semanas o al periodo académico 2026-2 de la universidad popular del cesar, seccional Aguachica, según su calendario académico, específicamente los relacionados con la cosecha de palma de aceite, siembra, mantenimiento y asistencia de cultivos, de acuerdo con las necesidades identificadas durante la entrevista realizada a la empresa.
+ 
+La plataforma funcionará operando en la gestión de clientes, servicios, solicitudes, programación de labores y usuarios con roles de administrador, cliente y empleado. De la misma forma, permitirá consultar el estado de las solicitudes y la información relacionada con los servicios asignados.
+ 
+El proyecto estará enfocado en el análisis de requisitos, diseño de las vistas y codificación de las funcionalidades definidas para la plataforma web. No se contempla dentro de su alcance el desarrollo de una aplicación móvil independiente, funcionalidades avanzadas de trabajo sin conexión, ni la integración con sistemas externos que no sean necesarios para las funciones establecidas.
+Requerimientos Funcionales
+El sistema debe permitir el registro, actualización y gestión de usuarios con al menos tres roles definidos: Administrador, Empleado y Cliente.
+El sistema debe permitir el inicio de sesión mediante credenciales seguras de correo junto contraseña y restringir las vistas y acciones según el rol asignado.
+El sistema debe permitir registrar y mantener un directorio actualizado de los clientes de la empresa (fincas, propietarios, datos de contacto y ubicación).
+El sistema debe permitir al administrador gestionar (crear, editar, deshabilitar) el catálogo de servicios disponibles (cosecha de palma, siembra, mantenimiento, asistencia técnica).
+El sistema debe permitir a los clientes autenticados crear solicitudes de servicios indicando el tipo de servicio, la ubicación, la fecha estimada requerida y detalles adicionales.
+El sistema debe permitir al administrador revisar, aprobar, rechazar o reagendar las solicitudes realizadas por los clientes.
+El sistema debe permitir al administrador crear y programar órdenes de trabajo o labores asociadas a una solicitud aprobada, asignando fecha, hora y ubicación.
+El sistema debe permitir asignar uno o varios empleados a una labor o trabajo programado.
+El sistema debe permitir a los empleados consultar desde sus dispositivos móviles la lista de labores que tienen asignadas, con sus respectivos detalles y ubicaciones, y a los supervisores consultar el progreso de las labores de los empleados bajo su mando.
+El sistema debe permitir a los empleados cambiar el estado de sus labores asignadas (Pendiente, En Proceso, Completada, Cancelada) y agregar observaciones breves, y a los supervisores registrar observaciones en el perfil de los empleados bajo su mando.
+El sistema debe permitir a los clientes visualizar en tiempo real el estado de sus solicitudes y el progreso de los servicios contratados.
+El sistema debe almacenar y presentar un historial consolidado de todos los servicios prestados a cada cliente, incluyendo fechas, labores realizadas y personal a cargo.
+El sistema debe generar alertas visuales/notificaciones dentro de la plataforma cuando se asigne una nueva labor a un empleado o cuando cambie el estado de la solicitud de un cliente.
+El sistema debe mostrar al administrador una vista general resumida con las labores del día, solicitudes pendientes por revisar y servicios activos.
+El sistema debe permitir al administrador exportar o consultar reportes consolidados de labores realizadas en un rango de fechas determinadas.
+Requerimientos No Funcionales
+Las contraseñas de los usuarios deben almacenarse cifradas mediante un algoritmo de hash seguro (Por ejemplo, BCrypt) y nunca en texto plano. 
+Todas las comunicaciones entre el cliente web y el servidor deben realizarse obligatoriamente a través del protocolo HTTPS/TLS. 
+Las API del backend deben implementar validación estricta de entrada de datos (sanitización) para prevenir vulnerabilidades OWASP Top 10 (Inyección SQL, XSS). 
+La interfaz de usuario debe ser Responsive (diseño adaptable) para garantizar su correcta visualización y uso en dispositivos móviles (smartphones) y de escritorio. 
+El diseño de la interfaz para el rol de empleado debe ser intuitivo y de baja complejidad visual para facilitar su uso por personal de campo. 
+El tiempo de respuesta del servidor para peticiones estándar de lectura (consultar labores o solicitudes) no debe superar los 2 segundos bajo condiciones normales. 
+Las vistas destinadas a los empleados deben optimizarse para cargar rápidamente incluso bajo conexiones de datos móviles limitadas (3G/4G rural). 
+El software debe diseñarse utilizando una arquitectura modular con clara separación de responsabilidades (Frontend, API/Backend, Base de datos). 
+El código fuente debe seguir convenciones estándar de nombrado y estilo según el lenguaje elegido, manteniendo una estructura organizada sin código duplicado (Principio DRY). 
+La base de datos debe diseñarse de forma relacional y normalizada (hasta la 3ª Forma Normal) para garantizar la integridad referencial y prevenir redundancias. 
+La arquitectura del software debe permitir la adición de nuevos módulos (ej. facturación, inventario) en el futuro sin necesidad de reescribir los módulos existentes. 
+La aplicación web debe ser compatible con los navegadores modernos más utilizados (Google Chrome, Mozilla Firefox, Safari, Microsoft Edge). 
+La interfaz de usuario debe incorporar los colores corporativos y la identidad visual de DOVI S.A.S. para garantizar una imagen institucional coherente
+El sistema debe garantizar la confidencialidad de los datos de los clientes y empleados, restringiendo el acceso mediante el principio de mínimo privilegio.
+El sistema debe incluir un registro de eventos (logging) en el backend para auditar errores del servidor y fallos críticos en el sistema.
+MARCO REFERENCIAL
+1. Marco de antecedentes
+En la actualidad, las tecnologías de la información y la comunicación (TIC) desempeñan un papel importante en la organización y administración de las empresas, debido a que permiten mejorar el manejo de la información, facilitar la comunicación y apoyar el seguimiento de los procesos internos. En este contexto, las plataformas web se han convertido en herramientas útiles para centralizar información, gestionar solicitudes y ofrecer a los usuarios acceso a diferentes servicios desde dispositivos conectados a Internet.
+En el sector agrícola, la organización de las actividades requiere coordinar clientes, personal, ubicaciones, fechas y labores específicas. Cuando estos procesos se realizan principalmente mediante llamadas telefónicas, mensajes de WhatsApp o comunicación presencial, pueden presentarse dificultades para mantener actualizada la información, consultar el estado de las solicitudes y realizar un seguimiento organizado de las actividades programadas.
+La transformación digital del sector agropecuario ha impulsado el uso de herramientas tecnológicas para mejorar la administración de las actividades agrícolas y facilitar el acceso a la información. La Organización de las Naciones Unidas para la Alimentación y la Agricultura (FAO) ha abordado la importancia de las tecnologías digitales para el desarrollo agrícola, destacando sus posibilidades para mejorar el acceso a información y apoyar la toma de decisiones en el sector.
+En relación con esta necesidad, el proyecto propone desarrollar una plataforma web para DOVI S.A.S. que permita gestionar la información de los clientes, administrar el catálogo de servicios agrícolas, registrar solicitudes, programar labores y consultar el progreso de los servicios prestados. De esta manera, se busca responder a las dificultades identificadas en la empresa y proporcionar una herramienta tecnológica adaptada a sus procesos.
+2. Marco teórico
+2.2. Plataformas web
+Una plataforma web es un sistema informático al que los usuarios pueden acceder mediante un navegador y una conexión a internet, sin necesidad de instalar un programa independiente. Permite realizar actividades como gestionar usuarios, registrar información, consultar datos y generar reportes mediante componentes como la interfaz de usuario, la lógica del servidor y la base de datos. En el proyecto de DOVI S.A.S., facilitará la gestión de los procesos de la empresa, permitiendo a los administradores organizar los servicios, a los clientes registrar solicitudes y a los empleados consultar las labores asignadas. Además, su diseño adaptable permitirá el acceso desde computadores y teléfonos móviles.
+Sistemas de información para la gestión empresarial
+Un sistema de información permite recopilar, almacenar y organizar datos para apoyar las actividades administrativas y facilitar la toma de decisiones. En DOVI S.A.S., permitirá centralizar la información de clientes, solicitudes, órdenes de trabajo y empleados, mejorando el control de los servicios agrícolas.
+Gestión de servicios agrícolas
+Comprende la organización y el seguimiento de actividades como la cosecha de palma de aceite, la siembra, el mantenimiento de cultivos y la asistencia técnica. En DOVI S.A.S., facilitará la programación de los servicios, la asignación del personal y el seguimiento de las labores.
+Gestión de clientes
+Consiste en registrar, actualizar y consultar la información de los clientes. En DOVI S.A.S., permitirá organizar los datos de los propietarios, las fincas, los contactos y las ubicaciones, facilitando el acceso a la información y el seguimiento de los servicios prestados.
+Gestión de solicitudes y órdenes de trabajo
+Consiste en registrar las necesidades de los clientes y organizar las actividades para su ejecución. En DOVI S.A.S., permitirá gestionar la aprobación de solicitudes, programar labores, asignar empleados y actualizar el estado de los trabajos.
+2.3. Bases de datos relacionales
+Una base de datos es un conjunto organizado de información que permite almacenar, consultar y actualizar datos mediante un sistema de gestión. En el modelo relacional, los datos se organizan en tablas vinculadas mediante claves primarias y foráneas. La normalización y la integridad referencial ayudan a reducir la duplicación y mantener la coherencia de la información. En DOVI S.A.S., la base de datos permitirá organizar los registros de usuarios, clientes, fincas, servicios, solicitudes, órdenes de trabajo y empleados, facilitando la gestión y el seguimiento de las actividades de la empresa.
+2.4. Arquitectura de software
+La arquitectura de software define la organización de los componentes de un sistema y las relaciones que existen entre ellos. Una arquitectura organizada facilita el mantenimiento, las pruebas y la incorporación de nuevas funcionalidades. En una aplicación web puede establecerse una separación entre el frontend, encargado de la interfaz con la que interactúan los usuarios; el backend, responsable de procesar las solicitudes y aplicar las reglas del sistema; y la base de datos, encargada de almacenar la información. Esta separación permitirá organizar el desarrollo de la plataforma de DOVI S.A.S. y mantener diferenciadas las responsabilidades de presentación, procesamiento y almacenamiento. También facilitará futuras ampliaciones, siempre que se diseñen adecuadamente las interfaces entre los componentes.
+2.5. Seguridad informática
+La seguridad informática comprende las medidas destinadas a proteger los sistemas y la información frente a accesos no autorizados, alteraciones, pérdidas y otros riesgos. Entre sus principios se encuentran la confidencialidad, la integridad y la disponibilidad de los datos.
+En una plataforma web es necesario implementar mecanismos de autenticación, control de acceso por roles, protección de las comunicaciones y validación de los datos recibidos. Las contraseñas deben almacenarse mediante funciones de hash diseñadas para este propósito, como bcrypt, en lugar de guardarse en texto plano. Asimismo, el uso de HTTPS/TLS protege las comunicaciones entre el navegador y el servidor.
+En el sistema de DOVI S.A.S., estas medidas permitirán limitar las acciones disponibles para cada usuario y proteger la información de clientes y empleados. El administrador tendrá acceso a las funciones de gestión, mientras que los clientes y empleados dispondrán de las funcionalidades correspondientes a sus roles.
+2.6. Diseño responsive y usabilidad
+El diseño responsive es una técnica de desarrollo web que permite adaptar la presentación y distribución de los elementos de una interfaz a diferentes tamaños de pantalla, como computadores, tabletas y teléfonos móviles.
+La usabilidad se relaciona con la facilidad con la que los usuarios pueden aprender a utilizar un sistema y completar sus tareas de manera efectiva. Una interfaz clara, con opciones comprensibles y una navegación organizada, puede reducir errores y facilitar la interacción.
+En DOVI S.A.S., el diseño responsive será especialmente importante para los empleados que necesitan consultar las labores asignadas desde sus teléfonos móviles. Por esta razón, la plataforma deberá presentar información clara, utilizar controles fáciles de identificar y evitar elementos innecesarios que dificulten su utilización en el campo.
+3. Marco conceptual
+Para comprender el alcance del proyecto, se definen los siguientes conceptos:
+Plataforma web: sistema informático accesible mediante un navegador que permite a los usuarios realizar consultas y ejecutar operaciones a través de Internet o de una red.
+Servicio agrícola: actividad ofrecida para atender necesidades relacionadas con la producción, el establecimiento o el mantenimiento de cultivos.
+Cliente: persona o entidad que solicita o contrata los servicios agrícolas ofrecidos por DOVI S.A.S.
+Administrador: usuario encargado de gestionar la información general de la plataforma, revisar solicitudes, programar labores y administrar los servicios.
+Empleado: usuario que consulta las labores que tiene asignadas y actualiza la información relacionada con su ejecución, de acuerdo con los permisos establecidos.
+Solicitud de servicio: registro mediante el cual un cliente expresa su necesidad de recibir un servicio agrícola y proporciona los datos necesarios para su evaluación.
+Orden de trabajo: registro que organiza una labor aprobada o programada e incluye información sobre su ejecución, ubicación, fecha y personal asignado.
+Base de datos: conjunto organizado de datos que permite almacenar, consultar, actualizar y relacionar la información utilizada por la plataforma.
+Backend: componente de una aplicación que procesa las solicitudes, aplica las reglas del sistema y se comunica con la base de datos.
+Frontend: parte de la aplicación con la que interactúan directamente los usuarios mediante pantallas, formularios, menús y otros elementos visuales.
+Autenticación: proceso mediante el cual se verifica la identidad de un usuario que intenta acceder al sistema.
+Control de acceso por roles: mecanismo que determina las funciones y los recursos a los que puede acceder cada usuario según el rol asignado.
+Diseño responsive: adaptación de la interfaz de una aplicación para que pueda visualizarse y utilizarse correctamente en diferentes dispositivos y tamaños de pantalla.
+Requisito funcional: descripción de una función o servicio que el sistema debe proporcionar, como registrar clientes o aprobar solicitudes.
+Requisito no funcional: condición relacionada con la calidad, seguridad, rendimiento, compatibilidad o mantenimiento del sistema.
+Historial de servicios: registro de los servicios y labores realizados para un cliente, con información sobre las fechas, las actividades y el personal responsable.
+Prueba funcional: procedimiento utilizado para comprobar que una funcionalidad del sistema produce los resultados esperados.
+5. Marco legal y normativo
+El desarrollo de la plataforma web de DOVI S.A.S. debe considerar la legislación colombiana relacionada con la protección de datos personales, los delitos informáticos y el uso de programas de computador, en la medida en que estas disposiciones resulten aplicables al proyecto.
+5.1. Ley 1581 de 2012: protección de datos personales
+La Ley 1581 de 2012 establece disposiciones generales para la protección de datos personales en Colombia. Su aplicación es relevante cuando una organización recolecta, almacena, utiliza o administra información que permite identificar a una persona natural.
+En la plataforma de DOVI S.A.S. se manejarán datos como nombres, correos electrónicos, teléfonos y otra información relacionada con clientes y empleados. Por esta razón, el tratamiento de dichos datos deberá ajustarse a las obligaciones legales aplicables, incluidos los principios de finalidad, libertad, veracidad, transparencia, acceso restringido y seguridad.
+5.2. Decreto 1377 de 2013 y Decreto 1074 de 2015
+El Decreto 1377 de 2013 reglamentó parcialmente la Ley 1581 de 2012 y sus disposiciones fueron incorporadas al Decreto Único Reglamentario 1074 de 2015 en materia de protección de datos personales.
+Estas normas sirven como referencia para determinar las condiciones aplicables al tratamiento de datos, la autorización de los titulares cuando corresponda y las políticas que deben orientar el manejo de la información personal. Su consideración ayudará a establecer prácticas apropiadas para la recolección, almacenamiento y consulta de los datos administrados por la plataforma.
+5.3. Ley 1273 de 2009: protección de la información y de los datos
+La Ley 1273 de 2009 modificó el Código Penal colombiano para incorporar disposiciones relacionadas con la protección de la información y de los datos, así como con conductas que afectan los sistemas informáticos.
+Esta ley constituye una referencia para reconocer la importancia de proteger los sistemas frente a accesos abusivos y otras conductas que comprometan la información. En consecuencia, el proyecto contempla controles de acceso, validación de datos y medidas de seguridad para reducir los riesgos relacionados con el uso de la plataforma.
+5.4. Ley 23 de 1982 y protección del software
+La Ley 23 de 1982 contiene disposiciones colombianas sobre derechos de autor y protección de obras, incluidas las que pueden resultar aplicables a programas de computador. Su relación con el proyecto se encuentra en el respeto por los derechos de autor de los programas, bibliotecas, plantillas y demás recursos utilizados durante el desarrollo.
+Por ello, se deberán respetar las licencias de las herramientas y componentes incorporados a la plataforma, así como reconocer las fuentes cuando corresponda.
+5.5. Buenas prácticas de seguridad web
+Además de la legislación colombiana, el proyecto tomará como referencia buenas prácticas técnicas de seguridad para aplicaciones web, como las recomendaciones publicadas por OWASP. Estas orientaciones permiten identificar riesgos frecuentes, entre ellos las fallas de control de acceso, la inyección de código y los errores de validación de entradas.
+La adopción de estas recomendaciones complementará las medidas de seguridad establecidas para el sistema. No obstante, su uso como referencia técnica no sustituye el cumplimiento de las obligaciones legales que correspondan.
+Diseño Metodológico
+Tipo de investigación
+La investigación es de tipo descriptiva porque inicia con la situación actual de DOVI S.A.S sin modificar las variables estudiadas. Esto incluye cómo se reciben las solicitudes, cómo se registra a los clientes, cómo se asignan las labores y qué medios se usan para comunicarlas (llamadas, WhatsApp y contacto presencial) y de igual manera es de tipo aplicada porque no se limita a describir el problema. Busca resolverlo con el desarrollo de una plataforma web, aplicando los conocimientos de Ingeniería de Sistemas a una necesidad real de la empresa.
+Enfoque de la investigación
+Se adopta un enfoque cualitativo, porque el propósito es comprender cómo la empresa gestiona actualmente sus servicios agrícolas y cuáles son las necesidades de las personas involucradas. Para ello se usaron la entrevista realizada a la empresa y el sondeo personal, de los cuales se obtuvo la información que sustenta el planteamiento del problema y los requisitos funcionales y no funcionales de la plataforma. Para el análisis de esta información nos basamos en un diagnóstico interpretativo y no en mediciones estadísticas. 
+Población y muestra
+La población de estudio está conformada por las personas vinculadas a la gestión y prestación de los servicios agrícolas de DOVI S.A.S.: el personal administrativo y directivo de la empresa, los empleados encargados de las labores de campo y los clientes que solicitan sus servicios. Al ser una investigación de enfoque cualitativo, no se calculó una muestra estadística. Se aplicó un muestreo no probabilístico por conveniencia, en el que se seleccionaron los participantes por su disponibilidad y por su conocimiento directo de los procesos de la empresa. La muestra quedó conformada por:
+Yenedy Villegas Guerrero la actual representante legal, con quien se realizó la entrevista.
+2 empleados y 1 cliente de la empresa, con quienes se realizó el sondeo personal.
+Técnicas de recolección de información
+Entrevista: se realizó a la actual representante legal de DOVI S.A.S. para conocer los servicios que ofrece, cómo se gestionan las solicitudes y las labores, y qué dificultades presenta actualmente la empresa.
+Sondeo personal: se hizo mediante conversaciones directas con empleados y clientes para conocer cómo reciben la información de las labores y cómo consultan los servicios y el estado de sus solicitudes.
+Metodología de desarrollo
+Para el desarrollo de la plataforma se adoptó el modelo en cascada, con esto se busca organizar el proyecto en fases secuenciales en las que cada una se completa y se verifica antes de pasar a la siguiente. Esta decisión surge debido a que los requisitos de DOVI S.A.S se levantaron desde el inicio mediante la entrevista y el sondeo, además que el alcance está definido y las fases coinciden con los objetivos específicos del proyecto. Con esto también se permite la retroalimentación entre fases ya sean anteriores o por abarcar cuando se detectan errores o ajustes necesarios.
+Arquitectura de software: MVC (Modelo–Vista–Controlador)
+La plataforma se estructura bajo el patrón MVC, que separa la aplicación en tres capas:
+Modelo: representa las entidades del sistema (usuario, cliente, finca, servicio, solicitud, labor, notificación y observación) y gestiona el acceso a la base de datos PostgreSQL mediante consultas parametrizadas.
+Vista: plantillas EJS renderizadas en el servidor, con diseño adaptable (responsive) y vistas diferenciadas según el rol del usuario.
+Controlador: rutas y controladores en Node.js con Express, que reciben las peticiones, validan los datos de entrada, verifican el rol, invocan los modelos y devuelven la vista correspondiente.
+Los diagramas creados para los requerimientos funcionales son:
+Casos de uso
+
+De secuencia
+
+
+De objetos
+
+De componentes
+
+De clases
+
+De despliegue
+
+De actividades 
+
+De colaboración
+
+Entidad-relación
+
+Diccionario de datos
+
+Vistas
+
