@@ -18,6 +18,10 @@
     <h1 class="auth__titulo">DOVI S.A.S. <img class="auth__logo" src="/img/icon-192.png" alt="" width="44" height="44"></h1>
     <p class="auth__subtitulo">Servicios y Mantenimiento Agrícola</p>
 
+    <% if (locals.flash) { %>
+      <p class="auth__aviso auth__aviso--<%= flash.tipo %>" role="status"><%= flash.texto %></p>
+    <% } %>
+
     <% if (error) { %>
       <p class="auth__error" role="alert"><%= error %></p>
     <% } %>
@@ -27,13 +31,17 @@
 
       <label for="correo">Correo Electrónico</label>
       <input id="correo" name="correo" type="email" placeholder="ejemplo@dovi.com"
-             value="<%= correo %>" autocomplete="username" required>
+             value="<%= correo %>" autocomplete="username" maxlength="100" required>
 
       <label for="clave">Contraseña</label>
       <input id="clave" name="clave" type="password" autocomplete="current-password" required>
 
       <button type="submit">Ingresar a la Plataforma</button>
     </form>
+
+    <p class="auth__enlace-pie">
+      <a href="/recuperar">¿Olvidaste tu contraseña?</a>
+    </p>
   </main>
 </body>
 </html>

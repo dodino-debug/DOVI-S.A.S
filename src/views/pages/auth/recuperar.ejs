@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOVI S.A.S. | Recuperar contraseña</title>
+  <link rel="icon" href="/img/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth">
+  <main class="auth__tarjeta">
+    <h1 class="auth__titulo">DOVI S.A.S. <img class="auth__logo" src="/img/icon-192.png" alt="" width="44" height="44"></h1>
+    <p class="auth__subtitulo">Recuperar acceso a tu cuenta</p>
+
+    <% if (enviado && mensaje) { %>
+      <p class="auth__aviso auth__aviso--ok" role="status"><%= mensaje %></p>
+    <% } %>
+
+    <% if (error) { %>
+      <p class="auth__error" role="alert"><%= error %></p>
+    <% } %>
+
+    <% if (!enviado) { %>
+      <p class="auth__mensaje">
+        Ingresa tu correo electrónico registrado y te enviaremos un enlace temporal para definir una nueva contraseña.
+      </p>
+
+      <form method="POST" action="/recuperar" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <label for="correo">Correo Electrónico</label>
+        <input id="correo" name="correo" type="email" placeholder="ejemplo@dovi.com"
+               value="<%= correo %>" autocomplete="email" maxlength="100" required>
+
+        <button type="submit">Enviar instrucciones</button>
+      </form>
+    <% } %>
+
+    <p class="auth__enlace-pie">
+      <a href="/login">← Volver al inicio de sesión</a>
+    </p>
+  </main>
+</body>
+</html>

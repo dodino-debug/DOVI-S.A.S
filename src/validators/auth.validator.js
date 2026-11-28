@@ -14,4 +14,27 @@ const validarCambioClave = [
   body('confirmacion').custom((valor, { req }) => valor === req.body.claveNueva)
 ];
 
-module.exports = { validarLogin, validarCambioClave };
+const validarRecuperacion = [
+  body('correo', 'Ingresa un correo electrónico válido.')
+    .isString()
+    .trim()
+    .toLowerCase()
+    .isEmail()
+    .isLength({ max: 100 })
+];
+
+const validarRestablecimiento = [
+  body('claveNueva', 'La nueva contraseña debe tener entre 10 y 64 caracteres.')
+    .isString()
+    .isLength({ min: 10, max: 64 }),
+  body('confirmacion', 'La confirmación debe coincidir con la nueva contraseña.')
+    .isString()
+    .custom((valor, { req }) => valor === req.body.claveNueva)
+];
+
+module.exports = {
+  validarLogin,
+  validarCambioClave,
+  validarRecuperacion,
+  validarRestablecimiento
+};

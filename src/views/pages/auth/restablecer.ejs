@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOVI S.A.S. | Restablecer contraseña</title>
+  <link rel="icon" href="/img/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth">
+  <main class="auth__tarjeta">
+    <h1 class="auth__titulo">DOVI S.A.S. <img class="auth__logo" src="/img/icon-192.png" alt="" width="44" height="44"></h1>
+    <p class="auth__subtitulo">Definir nueva contraseña</p>
+
+    <% if (!tokenValido) { %>
+      <p class="auth__error" role="alert">
+        El enlace de recuperación no es válido, ya fue utilizado o ha expirado.
+      </p>
+      <a class="auth__enlace-boton" href="/recuperar">Solicitar un nuevo enlace</a>
+      <p class="auth__enlace-pie">
+        <a href="/login">← Volver al inicio de sesión</a>
+      </p>
+    <% } else { %>
+      <% if (error) { %>
+        <p class="auth__error" role="alert"><%= error %></p>
+      <% } %>
+
+      <form method="POST" action="/restablecer/<%= token %>" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <label for="claveNueva">Nueva contraseña (10 a 64 caracteres)</label>
+        <input id="claveNueva" name="claveNueva" type="password" autocomplete="new-password"
+               minlength="10" maxlength="64" required>
+
+        <label for="confirmacion">Confirmar nueva contraseña</label>
+        <input id="confirmacion" name="confirmacion" type="password" autocomplete="new-password"
+               minlength="10" maxlength="64" required>
+
+        <button type="submit">Guardar nueva contraseña</button>
+      </form>
+
+      <p class="auth__enlace-pie">
+        <a href="/login">Cancelar y volver al inicio</a>
+      </p>
+    <% } %>
+  </main>
+</body>
+</html>

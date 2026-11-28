@@ -3,6 +3,22 @@ const Usuario = require('../models/usuario.model');
 const { rutaInicial } = require('../config/roles');
 const { COOKIE_NAME, COOKIE_CLEAR_OPTIONS } = require('../config/session');
 const { hashearClave, compararClave } = require('../services/claves');
+const {
+  solicitarRecuperacion,
+  verificarTokenRecuperacion,
+  restablecerContrasena
+} = require('../services/recuperacion.service');
+const { texto, mensajesDeError } = require('../utils/entrada');
+
+const MENSAJE_RECUPERACION_GENERICO =
+  'Si el correo está registrado y activo, recibirás instrucciones para restablecer tu contraseña.';
+
+function obtenerUrlBase(req) {
+  if (process.env.APP_URL && process.env.APP_URL.trim()) {
+    return process.env.APP_URL.trim();
+  }
+  return `${req.protocol}://${req.get('host')}`;
+}
 
 function mostrarLogin(req, res) {
   if (req.session.usuario) return res.redirect(rutaInicial(req.session.usuario));
@@ -10,7 +26,7 @@ function mostrarLogin(req, res) {
 }
 
 async function procesarLogin(req, res, next) {
-  const correo = typeof req.body.correo === 'string' ? req.body.correo.trim().toLowerCase() : '';
+  const correo = texto(req.body.correo).toLowerCase();
 
   try {
     if (!validationResult(req).isEmpty()) {
@@ -44,6 +60,91 @@ async function procesarLogin(req, res, next) {
         res.redirect(rutaInicial(req.session.usuario));
       });
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function mostrarRecuperar(req, res) {
+  if (req.session.usuario) return res.redirect(rutaInicial(req.session.usuario));
+  res.render('pages/auth/recuperar', { error: null, enviado: false, mensaje: null, correo: '' });
+}
+
+async function procesarRecuperar(req, res, next) {
+  if (req.session.usuario) return res.redirect(rutaInicial(req.session.usuario));
+  const correo = texto(req.body.correo).toLowerCase();
+
+  try {
+    const resultado = validationResult(req);
+    if (!resultado.isEmpty()) {
+      return res.status(400).render('pages/auth/recuperar', {
+        error: mensajesDeError(resultado)[0],
+        enviado: false,
+        mensaje: null,
+        correo
+      });
+    }
+
+    await solicitarRecuperacion({ correo, urlBase: obtenerUrlBase(req) });
+
+    res.render('pages/auth/recuperar', {
+      error: null,
+      enviado: true,
+      mensaje: MENSAJE_RECUPERACION_GENERICO,
+      correo: ''
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function mostrarRestablecer(req, res, next) {
+  try {
+    const token = texto(req.params.token);
+    const valido = await verificarTokenRecuperacion(token);
+
+    if (!valido) {
+      return res.status(400).render('pages/auth/restablecer', {
+        tokenValido: false,
+        token: '',
+        error: null
+      });
+    }
+
+    res.render('pages/auth/restablecer', {
+      tokenValido: true,
+      token,
+      error: null
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function procesarRestablecer(req, res, next) {
+  try {
+    const token = texto(req.params.token);
+    const resultado = validationResult(req);
+
+    if (!resultado.isEmpty()) {
+      const valido = await verificarTokenRecuperacion(token);
+      return res.status(400).render('pages/auth/restablecer', {
+        tokenValido: Boolean(valido),
+        token: valido ? token : '',
+        error: valido ? mensajesDeError(resultado)[0] : null
+      });
+    }
+
+    const actualizado = await restablecerContrasena(token, req.body.claveNueva);
+    if (!actualizado) {
+      return res.status(400).render('pages/auth/restablecer', {
+        tokenValido: false,
+        token: '',
+        error: null
+      });
+    }
+
+    res.redirigir('/login', 'ok', 'Tu contraseña ha sido restablecida. Ya puedes iniciar sesión.');
   } catch (error) {
     next(error);
   }
@@ -109,6 +210,10 @@ function cerrarSesion(req, res, next) {
 module.exports = {
   mostrarLogin,
   procesarLogin,
+  mostrarRecuperar,
+  procesarRecuperar,
+  mostrarRestablecer,
+  procesarRestablecer,
   mostrarCambioClave,
   procesarCambioClave,
   cerrarSesion

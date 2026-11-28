@@ -24,4 +24,19 @@ function compararClave(clave, hash) {
   return bcrypt.compare(clave, hash || HASH_FALSO);
 }
 
-module.exports = { claveTemporal, hashearClave, compararClave, HASH_FALSO };
+function generarTokenHex(bytes = 32) {
+  return crypto.randomBytes(bytes).toString('hex');
+}
+
+function hashearTokenSha256(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+module.exports = {
+  claveTemporal,
+  hashearClave,
+  compararClave,
+  generarTokenHex,
+  hashearTokenSha256,
+  HASH_FALSO
+};
