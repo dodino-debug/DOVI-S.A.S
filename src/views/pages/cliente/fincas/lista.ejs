@@ -1,0 +1,60 @@
+<%- include('../../../partials/cliente-inicio', { titulo: 'Mis fincas', seccion: 'fincas' }) %>
+
+<section id="fincas" class="tarjeta" aria-labelledby="titulo-fincas">
+  <div class="tarjeta__cabecera">
+    <h2 id="titulo-fincas">Directorio de fincas</h2>
+    <a class="boton boton--grande" href="/cliente/fincas/nueva">+ Registrar Predio</a>
+  </div>
+
+  <% if (locals.flash) { %>
+    <p class="flash flash--<%= flash.tipo %> portal-aviso" role="status"><%= flash.texto %></p>
+  <% } %>
+
+  <% if (!predios.length) { %>
+    <p class="portal-aviso">Todavía no tienes fincas registradas. Registra tu primer predio para solicitar servicios.</p>
+  <% } else { %>
+    <div class="tabla-scroll">
+      <table class="tabla-fincas-cliente">
+        <colgroup>
+          <col><col><col><col><col><col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Predio</th>
+            <th scope="col">Ubicación</th>
+            <th scope="col">Área</th>
+            <th scope="col">Solicitudes</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% predios.forEach((predio) => { %>
+            <tr>
+              <td class="cliente"><%= predio.nombre %></td>
+              <td><%= predio.ubicacion %></td>
+              <td><%= Number(predio.area_hectareas).toLocaleString('es-CO', { maximumFractionDigits: 2 }) %> ha</td>
+              <td><%= predio.solicitudes %></td>
+              <td>
+                <span class="insignia <%= predio.activo ? 'insignia--ok' : 'insignia--off' %>">
+                  <%= predio.activo ? 'ACTIVO' : 'INACTIVO' %>
+                </span>
+              </td>
+              <td>
+                <div class="acciones">
+                  <a class="boton" href="/cliente/fincas/<%= predio.id %>/editar">Editar</a>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+
+  <div class="tarjeta__nota">
+    <span>Los predios registrados conservan su historial de servicios y no se eliminan de la plataforma.</span>
+  </div>
+</section>
+
+<%- include('../../../partials/cliente-fin') %>

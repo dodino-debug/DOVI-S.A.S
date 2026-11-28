@@ -26,6 +26,17 @@ async function buscarPorId(id) {
   return rows[0] || null;
 }
 
+async function buscarPorIdYCliente(id, clienteId) {
+  const { rows } = await pool.query(
+    `SELECT id_finca AS id, nombre_predio AS nombre, ubicacion,
+            hectareas AS area_hectareas, (estado = 'ACTIVO') AS activo
+       FROM fincas
+      WHERE id_finca = $1 AND id_cliente = $2`,
+    [id, clienteId]
+  );
+  return rows[0] || null;
+}
+
 async function crear(clienteId, { nombre, ubicacion, area }) {
   await pool.query(
     'INSERT INTO fincas (id_cliente, nombre_predio, ubicacion, hectareas) VALUES ($1, $2, $3, $4)',
@@ -41,6 +52,16 @@ async function actualizar(id, { nombre, ubicacion, area }) {
   return resultado.rowCount > 0;
 }
 
+async function actualizarDeCliente(id, clienteId, { nombre, ubicacion, area }) {
+  const resultado = await pool.query(
+    `UPDATE fincas
+        SET nombre_predio = $3, ubicacion = $4, hectareas = $5
+      WHERE id_finca = $1 AND id_cliente = $2`,
+    [id, clienteId, nombre, ubicacion, area]
+  );
+  return resultado.rowCount > 0;
+}
+
 async function cambiarEstado(id, activo) {
   const { rows } = await pool.query(
     `UPDATE fincas
@@ -52,4 +73,12 @@ async function cambiarEstado(id, activo) {
   return rows[0] || null;
 }
 
-module.exports = { listarPorCliente, buscarPorId, crear, actualizar, cambiarEstado };
+module.exports = {
+  listarPorCliente,
+  buscarPorId,
+  buscarPorIdYCliente,
+  crear,
+  actualizar,
+  actualizarDeCliente,
+  cambiarEstado
+};

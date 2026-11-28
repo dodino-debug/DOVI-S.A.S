@@ -79,3 +79,14 @@ body.portal-cliente {
 .portal-aviso {
   margin: 0 24px 16px;
 }
+
+.tabla-fincas-cliente {
+  min-width: 820px;
+}
+
+.tabla-fincas-cliente col:nth-child(1) { width: 22%; }
+.tabla-fincas-cliente col:nth-child(2) { width: 32%; }
+.tabla-fincas-cliente col:nth-child(3) { width: 11%; }
+.tabla-fincas-cliente col:nth-child(4) { width: 11%; }
+.tabla-fincas-cliente col:nth-child(5) { width: 11%; }
+.tabla-fincas-cliente col:nth-child(6) { width: 13%; }

@@ -20,6 +20,7 @@
       </a>
       <nav aria-label="Portal de clientes">
         <a href="/cliente/solicitudes"<%- locals.seccion === 'solicitudes' ? ' aria-current="page"' : '' %>>Mis solicitudes</a>
+        <a href="/cliente/fincas"<%- locals.seccion === 'fincas' ? ' aria-current="page"' : '' %>>Mis fincas</a>
         <a href="/cliente/servicios"<%- locals.seccion === 'servicios' ? ' aria-current="page"' : '' %>>Servicios</a>
         <a href="/cambiar-clave">Cambiar contraseña</a>
         <form method="post" action="/logout">
