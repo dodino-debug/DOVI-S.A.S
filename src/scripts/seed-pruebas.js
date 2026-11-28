@@ -1,6 +1,6 @@
 require('dotenv').config();
-const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
+const { hashearClave } = require('../services/claves');
 
 async function main() {
   if (process.env.NODE_ENV === 'production') {
@@ -12,7 +12,7 @@ async function main() {
     throw new Error('Define PRUEBAS_PASSWORD (mínimo 10 caracteres) en tu .env');
   }
 
-  const hash = await bcrypt.hash(clave, 12);
+  const hash = await hashearClave(clave);
   // [nombre, correo, rol, es_supervisor, debe_cambiar_clave, telefono]
   const usuarios = [
     ['Supervisor de Prueba', 'supervisor@dovi.test', 'EMPLEADO', true, false, '3000000001'],

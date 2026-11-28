@@ -57,7 +57,14 @@ async function estadoSesion(id) {
   return mapear(rows[0]);
 }
 
-async function cerrarSesiones(id) {
+async function cerrarSesiones(id, exceptoSid = null) {
+  if (exceptoSid) {
+    await pool.query(
+      `DELETE FROM session WHERE sess->'usuario'->>'id' = $1::text AND sid <> $2`,
+      [id, exceptoSid]
+    );
+    return;
+  }
   await pool.query(`DELETE FROM session WHERE sess->'usuario'->>'id' = $1::text`, [id]);
 }
 

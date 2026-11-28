@@ -5,6 +5,7 @@
 DROP TABLE IF EXISTS
   observaciones_empleado,
   notificaciones,
+  password_reset_tokens,
   supervisor_empleado,
   empleados_supervisor,
   labor_empleado,

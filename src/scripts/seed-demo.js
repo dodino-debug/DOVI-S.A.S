@@ -1,23 +1,38 @@
 require('dotenv').config();
 const pool = require('../config/db');
 
-const HOY = "(NOW() AT TIME ZONE 'America/Bogota')::date";
-const CLIENTE_PRUEBA = "(SELECT id_usuario FROM usuarios WHERE correo = 'cliente@dovi.test')";
+const CORREO_CLIENTE_PRUEBA = 'cliente@dovi.test';
+const CORREO_EMPLEADO_PRUEBA = 'empleado@dovi.test';
 const MARCA = 'Predio de Prueba%';
 
 async function borrar(db) {
-  const filtroFinca = `id_cliente = ${CLIENTE_PRUEBA} AND nombre_predio LIKE $1`;
   await db.query(
     `DELETE FROM labores
-      WHERE id_solicitud IN (SELECT id_solicitud FROM solicitudes
-                              WHERE id_finca IN (SELECT id_finca FROM fincas WHERE ${filtroFinca}))`,
-    [MARCA]
+      WHERE id_solicitud IN (
+        SELECT s.id_solicitud
+          FROM solicitudes s
+          JOIN fincas f ON f.id_finca = s.id_finca
+          JOIN usuarios u ON u.id_usuario = f.id_cliente
+         WHERE u.correo = $1 AND f.nombre_predio LIKE $2
+      )`,
+    [CORREO_CLIENTE_PRUEBA, MARCA]
   );
   await db.query(
-    `DELETE FROM solicitudes WHERE id_finca IN (SELECT id_finca FROM fincas WHERE ${filtroFinca})`,
-    [MARCA]
+    `DELETE FROM solicitudes
+      WHERE id_finca IN (
+        SELECT f.id_finca
+          FROM fincas f
+          JOIN usuarios u ON u.id_usuario = f.id_cliente
+         WHERE u.correo = $1 AND f.nombre_predio LIKE $2
+      )`,
+    [CORREO_CLIENTE_PRUEBA, MARCA]
   );
-  const resultado = await db.query(`DELETE FROM fincas WHERE ${filtroFinca}`, [MARCA]);
+  const resultado = await db.query(
+    `DELETE FROM fincas
+      WHERE id_cliente = (SELECT id_usuario FROM usuarios WHERE correo = $1)
+        AND nombre_predio LIKE $2`,
+    [CORREO_CLIENTE_PRUEBA, MARCA]
+  );
   return resultado.rowCount;
 }
 
@@ -28,7 +43,7 @@ async function main() {
 
   const modoLimpiar = process.argv.includes('--limpiar');
   const db = await pool.connect();
-  const unico = async (sql, params) => (await db.query(sql, params)).rows[0];
+  const unico = async (sql, params = []) => (await db.query(sql, params)).rows[0];
 
   try {
     await db.query('BEGIN');
@@ -41,15 +56,18 @@ async function main() {
     }
 
     const previo = await unico(
-      `SELECT 1 AS existe FROM fincas WHERE id_cliente = ${CLIENTE_PRUEBA} AND nombre_predio LIKE $1`,
-      [MARCA]
+      `SELECT 1 AS existe
+         FROM fincas f
+         JOIN usuarios u ON u.id_usuario = f.id_cliente
+        WHERE u.correo = $1 AND f.nombre_predio LIKE $2`,
+      [CORREO_CLIENTE_PRUEBA, MARCA]
     );
     if (previo) {
       throw new Error('Ya existen datos de demostración. Para rehacerlos: npm run seed:demo -- --limpiar');
     }
 
-    const cliente = await unico("SELECT id_usuario AS id FROM usuarios WHERE correo = 'cliente@dovi.test'");
-    const empleado = await unico("SELECT id_usuario AS id FROM usuarios WHERE correo = 'empleado@dovi.test'");
+    const cliente = await unico('SELECT id_usuario AS id FROM usuarios WHERE correo = $1', [CORREO_CLIENTE_PRUEBA]);
+    const empleado = await unico('SELECT id_usuario AS id FROM usuarios WHERE correo = $1', [CORREO_EMPLEADO_PRUEBA]);
     if (!cliente || !empleado) {
       throw new Error('Faltan usuarios. Ejecuta antes: npm run seed:admin y npm run seed:pruebas');
     }
@@ -73,7 +91,7 @@ async function main() {
       unico(
         `INSERT INTO solicitudes (id_cliente, id_finca, id_servicio, fecha_esperada,
                                   detalles_adicionales, estado_solicitud)
-         VALUES ($1, $2, $3, ${HOY} + $4::int, 'Solicitud de prueba', $5)
+         VALUES ($1, $2, $3, (NOW() AT TIME ZONE 'America/Bogota')::date + $4::int, 'Solicitud de prueba', $5)
          RETURNING id_solicitud AS id`,
         [cliente.id, fincaId, servicioId, dias, estado]
       );
@@ -87,7 +105,7 @@ async function main() {
     const crearLabor = (solicitudId, hora, estado) =>
       unico(
         `INSERT INTO labores (id_solicitud, fecha_programada, hora_programada, estado_labor)
-         VALUES ($1, ${HOY}, $2, $3) RETURNING id_labor AS id`,
+         VALUES ($1, (NOW() AT TIME ZONE 'America/Bogota')::date, $2, $3) RETURNING id_labor AS id`,
         [solicitudId, hora, estado]
       );
 

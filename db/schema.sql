@@ -2,9 +2,10 @@
 -- Sigue el diccionario de datos y el diagrama entidad-relación del documento del proyecto.
 -- Se ejecuta en el editor SQL de Neon. Se puede ejecutar varias veces sin error.
 --
--- Columnas y tablas que NO están en el diccionario (adiciones mínimas, marcadas con [+]):
+-- Columnas y tablas adicionales respecto al diccionario base (marcadas con [+]):
 --   usuarios.es_supervisor, usuarios.debe_cambiar_clave, solicitudes.nota_admin,
---   tabla supervisor_empleado, tabla session.
+--   labores.fecha_creacion/fecha_inicio/fecha_completada,
+--   tablas supervisor_empleado, password_reset_tokens, notificaciones, session.
 
 -- ===== Usuarios =====
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -32,6 +33,18 @@ CREATE TABLE IF NOT EXISTS supervisor_empleado (
 );
 CREATE INDEX IF NOT EXISTS idx_supervisor_empleado_sup ON supervisor_empleado (id_supervisor);
 
+-- [+] Tokens temporales de un solo uso para recuperación de contraseña (RF02)
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id_token       SERIAL PRIMARY KEY,
+  id_usuario     INTEGER NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+  token_hash     VARCHAR(64) NOT NULL UNIQUE,
+  expira_en      TIMESTAMPTZ NOT NULL,
+  usado          BOOLEAN NOT NULL DEFAULT FALSE,
+  fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_password_reset_usuario ON password_reset_tokens (id_usuario, usado);
+CREATE INDEX IF NOT EXISTS idx_password_reset_expira ON password_reset_tokens (expira_en);
+
 -- ===== Fincas =====
 CREATE TABLE IF NOT EXISTS fincas (
   id_finca       SERIAL PRIMARY KEY,
@@ -43,6 +56,7 @@ CREATE TABLE IF NOT EXISTS fincas (
   CONSTRAINT fincas_finca_cliente UNIQUE (id_finca, id_cliente)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_fincas_cliente_nombre ON fincas (id_cliente, LOWER(nombre_predio));
+CREATE INDEX IF NOT EXISTS idx_fincas_cliente ON fincas (id_cliente);
 
 -- ===== Servicios =====
 CREATE TABLE IF NOT EXISTS servicios (
@@ -80,6 +94,7 @@ CREATE TABLE IF NOT EXISTS solicitudes (
   FOREIGN KEY (id_finca, id_cliente) REFERENCES fincas (id_finca, id_cliente)
 );
 CREATE INDEX IF NOT EXISTS idx_solicitudes_estado ON solicitudes (estado_solicitud, fecha_creacion DESC);
+CREATE INDEX IF NOT EXISTS idx_solicitudes_cliente ON solicitudes (id_cliente, fecha_creacion DESC);
 
 -- Historial de decisiones administrativas. Reagendar deja la solicitud aprobada.
 CREATE TABLE IF NOT EXISTS solicitud_historial (
@@ -102,16 +117,40 @@ CREATE TABLE IF NOT EXISTS labores (
   hora_programada   TIME NOT NULL,
   estado_labor      VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE'
                     CHECK (estado_labor IN ('PENDIENTE', 'EN PROCESO', 'COMPLETADA', 'CANCELADA')),
-  observaciones     VARCHAR(255)
+  observaciones     VARCHAR(255),
+  fecha_creacion    TIMESTAMPTZ NOT NULL DEFAULT NOW(),      -- [+] trazabilidad temporal
+  fecha_inicio      TIMESTAMPTZ,                             -- [+] paso a EN PROCESO
+  fecha_completada  TIMESTAMPTZ                              -- [+] paso a COMPLETADA
 );
+ALTER TABLE labores ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW();
+ALTER TABLE labores ADD COLUMN IF NOT EXISTS fecha_inicio TIMESTAMPTZ;
+ALTER TABLE labores ADD COLUMN IF NOT EXISTS fecha_completada TIMESTAMPTZ;
+
 CREATE INDEX IF NOT EXISTS idx_labores_fecha_estado ON labores (fecha_programada, estado_labor);
 CREATE INDEX IF NOT EXISTS idx_labores_estado ON labores (estado_labor);
+CREATE INDEX IF NOT EXISTS idx_labores_solicitud ON labores (id_solicitud);
 
 CREATE TABLE IF NOT EXISTS labor_empleado (
   id_labor    INTEGER NOT NULL REFERENCES labores(id_labor) ON DELETE CASCADE,
   id_empleado INTEGER NOT NULL REFERENCES usuarios(id_usuario),
   PRIMARY KEY (id_labor, id_empleado)
 );
+CREATE INDEX IF NOT EXISTS idx_labor_empleado_empleado ON labor_empleado (id_empleado);
+
+-- [+] Notificaciones internas (RF13)
+CREATE TABLE IF NOT EXISTS notificaciones (
+  id_notificacion SERIAL PRIMARY KEY,
+  id_usuario      INTEGER NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+  tipo            VARCHAR(30) NOT NULL
+                  CHECK (tipo IN ('SOLICITUD_ESTADO', 'LABOR_ASIGNADA', 'LABOR_ESTADO', 'SISTEMA')),
+  titulo          VARCHAR(120) NOT NULL CHECK (BTRIM(titulo) <> ''),
+  mensaje         VARCHAR(255) NOT NULL CHECK (BTRIM(mensaje) <> ''),
+  enlace          VARCHAR(255),
+  leida           BOOLEAN NOT NULL DEFAULT FALSE,
+  fecha_creacion  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_notificaciones_usuario_leida
+  ON notificaciones (id_usuario, leida, fecha_creacion DESC);
 
 -- ===== Sesiones (técnica, para connect-pg-simple) =====
 CREATE TABLE IF NOT EXISTS session (

@@ -1,6 +1,6 @@
 require('dotenv').config();
-const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
+const { hashearClave } = require('../services/claves');
 
 async function main() {
   const correo = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
@@ -14,7 +14,7 @@ async function main() {
     throw new Error('Define ADMIN_TELEFONO en tu .env (solo números, con + opcional, de 7 a 20 caracteres)');
   }
 
-  const hash = await bcrypt.hash(clave, 12);
+  const hash = await hashearClave(clave);
   const resultado = await pool.query(
     `INSERT INTO usuarios (nombre_completo, correo, contrasena, rol, telefono)
      VALUES ($1, $2, $3, 'ADMINISTRADOR', $4)
