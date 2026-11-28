@@ -47,6 +47,7 @@ function verificarCsrf(req, res, next) {
 
   const error = new Error('Solicitud no autorizada. Recarga la página e inténtalo de nuevo.');
   error.status = 403;
+  error.exponer = true;
   next(error);
 }
 

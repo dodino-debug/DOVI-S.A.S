@@ -1,7 +1,8 @@
 const Usuario = require('../models/usuario.model');
+const { COOKIE_NAME, COOKIE_CLEAR_OPTIONS } = require('../config/session');
 
 module.exports = async function sesionVigente(req, res, next) {
-  const guardado = req.session.usuario;
+  const guardado = req.session && req.session.usuario;
   if (!guardado) return next();
 
   try {
@@ -9,7 +10,7 @@ module.exports = async function sesionVigente(req, res, next) {
 
     if (!actual || !actual.activo) {
       return req.session.destroy(() => {
-        res.clearCookie('dovi.sid');
+        res.clearCookie(COOKIE_NAME, COOKIE_CLEAR_OPTIONS);
         if (req.path.startsWith('/api/')) {
           return res.status(401).json({ error: 'Sesión no válida' });
         }

@@ -104,6 +104,12 @@ async function actualizar(req, res, next) {
 async function cambiarEstado(req, res, next) {
   try {
     if (!esId(req.params.id)) return next();
+    if (!validationResult(req).isEmpty()) {
+      const error = new Error('El estado indicado no es válido.');
+      error.status = 400;
+      error.exponer = true;
+      return next(error);
+    }
     const activo = req.body.activo === 'true';
     const predio = await Finca.cambiarEstado(Number(req.params.id), activo);
     if (!predio) return next();

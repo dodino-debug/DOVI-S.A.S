@@ -4,9 +4,9 @@ const ROL_DB = { admin: 'ADMINISTRADOR', empleado: 'EMPLEADO', cliente: 'CLIENTE
 const ROL_APP = { ADMINISTRADOR: 'admin', EMPLEADO: 'empleado', CLIENTE: 'cliente' };
 
 const RUTA_POR_ROL = {
-  admin: '/admin',
-  empleado: '/empleado',
-  cliente: '/cliente'
+  admin: '/admin/dashboard',
+  empleado: '/empleado/labores',
+  cliente: '/cliente/solicitudes'
 };
 
 const ETIQUETA_ROL = {

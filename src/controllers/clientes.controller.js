@@ -1,8 +1,7 @@
-const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const Cliente = require('../models/cliente.model');
 const Finca = require('../models/finca.model');
-const { claveTemporal } = require('../services/claves');
+const { claveTemporal, hashearClave } = require('../services/claves');
 const { ETIQUETA_ROL } = require('../config/roles');
 const { esId, texto, mensajesDeError } = require('../utils/entrada');
 
@@ -51,7 +50,7 @@ async function crear(req, res, next) {
     if (!resultado.isEmpty()) return mostrarForm(res, 400, cliente, mensajesDeError(resultado));
 
     const clave = claveTemporal();
-    const hash = await bcrypt.hash(clave, 12);
+    const hash = await hashearClave(clave);
     const id = await Cliente.crear({ ...datos, hash });
     mostrarCredenciales(res, datos, clave, id);
   } catch (error) {

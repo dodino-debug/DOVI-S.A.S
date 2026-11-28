@@ -1,7 +1,6 @@
-const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const Usuario = require('../models/usuario.model');
-const { claveTemporal } = require('../services/claves');
+const { claveTemporal, hashearClave } = require('../services/claves');
 const { ETIQUETA_ROL } = require('../config/roles');
 const { esId, texto, mensajesDeError } = require('../utils/entrada');
 
@@ -101,7 +100,7 @@ async function crear(req, res, next) {
     if (!resultado.isEmpty()) return await mostrarForm(res, 400, cuenta, mensajesDeError(resultado));
 
     const clave = claveTemporal();
-    const hash = await bcrypt.hash(clave, 12);
+    const hash = await hashearClave(clave);
     await Usuario.crear({ ...datos, hash });
     mostrarCredenciales(
       res,
@@ -163,6 +162,12 @@ async function actualizar(req, res, next) {
 async function cambiarEstado(req, res, next) {
   try {
     if (!esId(req.params.id)) return next();
+    if (!validationResult(req).isEmpty()) {
+      const error = new Error('El estado indicado no es válido.');
+      error.status = 400;
+      error.exponer = true;
+      return next(error);
+    }
     const id = Number(req.params.id);
     const activo = req.body.activo === 'true';
 
@@ -207,7 +212,7 @@ async function restablecerClave(req, res, next) {
     }
 
     const clave = claveTemporal();
-    const hash = await bcrypt.hash(clave, 12);
+    const hash = await hashearClave(clave);
     const cuenta = await Usuario.restablecerClave(id, hash);
     if (!cuenta) return next();
 

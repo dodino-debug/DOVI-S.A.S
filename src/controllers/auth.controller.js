@@ -1,10 +1,8 @@
-const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const Usuario = require('../models/usuario.model');
 const { rutaInicial } = require('../config/roles');
-
-// Hash de relleno: así el tiempo de respuesta es parecido exista o no el correo.
-const HASH_FALSO = bcrypt.hashSync('relleno-no-valido', 12);
+const { COOKIE_NAME, COOKIE_CLEAR_OPTIONS } = require('../config/session');
+const { hashearClave, compararClave } = require('../services/claves');
 
 function mostrarLogin(req, res) {
   if (req.session.usuario) return res.redirect(rutaInicial(req.session.usuario));
@@ -23,7 +21,7 @@ async function procesarLogin(req, res, next) {
     }
 
     const usuario = await Usuario.buscarPorCorreo(correo);
-    const coincide = await bcrypt.compare(req.body.clave, usuario ? usuario.password_hash : HASH_FALSO);
+    const coincide = await compararClave(req.body.clave, usuario ? usuario.password_hash : null);
 
     if (!usuario || !coincide || !usuario.activo) {
       return res.status(401).render('pages/auth/login', {
@@ -73,19 +71,27 @@ async function procesarCambioClave(req, res, next) {
 
     const usuario = await Usuario.buscarPorId(req.session.usuario.id);
     if (!usuario || !usuario.activo) {
-      return req.session.destroy(() => res.redirect('/login'));
+      return req.session.destroy(() => {
+        res.clearCookie(COOKIE_NAME, COOKIE_CLEAR_OPTIONS);
+        res.redirect('/login');
+      });
     }
 
-    const correcta = await bcrypt.compare(req.body.claveActual, usuario.password_hash);
+    const correcta = await compararClave(req.body.claveActual, usuario.password_hash);
     if (!correcta) return responder(401, 'La contraseña actual no es correcta.');
 
-    const hash = await bcrypt.hash(req.body.claveNueva, 12);
+    const hash = await hashearClave(req.body.claveNueva);
     await Usuario.actualizarClave(usuario.id, hash);
+    await Usuario.cerrarSesiones(usuario.id, req.sessionID);
 
-    req.session.usuario.debeCambiarClave = false;
-    req.session.save((error) => {
-      if (error) return next(error);
-      res.redirect(rutaInicial(req.session.usuario));
+    const sesionActualizada = { ...req.session.usuario, debeCambiarClave: false };
+    req.session.regenerate((errorRegenerar) => {
+      if (errorRegenerar) return next(errorRegenerar);
+      req.session.usuario = sesionActualizada;
+      req.session.save((errorGuardar) => {
+        if (errorGuardar) return next(errorGuardar);
+        res.redirect(rutaInicial(req.session.usuario));
+      });
     });
   } catch (error) {
     next(error);
@@ -95,7 +101,7 @@ async function procesarCambioClave(req, res, next) {
 function cerrarSesion(req, res, next) {
   req.session.destroy((error) => {
     if (error) return next(error);
-    res.clearCookie('dovi.sid');
+    res.clearCookie(COOKIE_NAME, COOKIE_CLEAR_OPTIONS);
     res.redirect('/login');
   });
 }

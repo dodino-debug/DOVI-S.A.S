@@ -1,7 +1,12 @@
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 // Sin 0, O, 1, l, I para evitar confusiones al dictarla o copiarla.
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+const COSTO_BCRYPT = 12;
+
+// Hash de relleno: así el tiempo de respuesta del login es parecido exista o no el correo.
+const HASH_FALSO = bcrypt.hashSync('relleno-no-valido', COSTO_BCRYPT);
 
 function claveTemporal(longitud = 12) {
   let clave = '';
@@ -11,4 +16,12 @@ function claveTemporal(longitud = 12) {
   return clave;
 }
 
-module.exports = { claveTemporal };
+function hashearClave(clave) {
+  return bcrypt.hash(clave, COSTO_BCRYPT);
+}
+
+function compararClave(clave, hash) {
+  return bcrypt.compare(clave, hash || HASH_FALSO);
+}
+
+module.exports = { claveTemporal, hashearClave, compararClave, HASH_FALSO };
