@@ -12,7 +12,7 @@
   </p>
 </section>
 
-<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+<section class="tarjeta tarjeta--form tarjeta--espaciada">
   <form class="formulario" method="POST" novalidate
         action="<%= editando ? '/admin/predios/' + predio.id : '/admin/clientes/' + cliente.id + '/predios' %>">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

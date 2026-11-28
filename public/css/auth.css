@@ -107,3 +107,35 @@ button.auth__secundario {
 button.auth__secundario:hover { background: #eaf0ea; }
 
 button:hover { background: #143a28; }
+
+.auth__codigo {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 700;
+  color: #1a4731;
+}
+
+.auth__mensaje {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.auth__enlace-boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  background: #1a4731;
+  border-radius: 4px;
+}
+
+.auth__enlace-boton:hover { background: #143a28; }

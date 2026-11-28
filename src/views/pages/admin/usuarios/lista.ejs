@@ -21,7 +21,7 @@
     <select name="estado">
       <option value="">Todos</option>
       <option value="activos"<%- filtros.estado === 'activos' ? ' selected' : '' %>>Activos</option>
-      <option value="inactivos"<%- filtros.estado === 'inactivos' ? ' selected' : '' %>>Inactivos</option>
+      <option value="inactivos"<%- filtros.estado === 'inactivos' ? ' selected' : '' %>>Inhabilitados</option>
     </select>
   </label>
   <button type="submit" class="boton boton--secundario">Filtrar</button>
@@ -29,10 +29,9 @@
 
 <section class="tarjeta">
   <div class="tabla-scroll">
-    <table style="min-width: 980px;">
+    <table class="tabla--ancha tabla-usuarios">
       <colgroup>
-        <col style="width: 17%"><col style="width: 22%"><col style="width: 10%">
-        <col style="width: 15%"><col style="width: 13%"><col style="width: 23%">
+        <col><col><col><col><col><col>
       </colgroup>
       <thead>
         <tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Equipo</th><th>Estado</th><th>Acciones</th></tr>
@@ -55,7 +54,7 @@
             <td>
               <div class="acciones">
                 <span class="insignia <%= u.activo ? 'insignia--ok' : 'insignia--off' %>">
-                  <%= u.activo ? 'ACTIVO' : 'INACTIVO' %>
+                  <%= u.activo ? 'ACTIVO' : 'INHABILITADO' %>
                 </span>
                 <% if (u.debe_cambiar_clave) { %>
                   <span class="insignia insignia--aviso">CLAVE TEMPORAL</span>

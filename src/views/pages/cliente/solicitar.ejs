@@ -1,0 +1,42 @@
+<%- include('../../partials/cliente-inicio', { titulo: 'Solicitar servicio', seccion: 'solicitar' }) %>
+
+<section id="nueva-solicitud" class="tarjeta tarjeta--form" aria-labelledby="titulo-nueva">
+  <h2 id="titulo-nueva">Solicitar un servicio</h2>
+  <div class="formulario">
+    <% if (errores.length) { %>
+      <ul class="errores" role="alert">
+        <% errores.forEach((error) => { %><li><%= error %></li><% }); %>
+      </ul>
+    <% } %>
+    <% if (!predios.length) { %>
+      <p class="formulario__dato">Para solicitar un servicio, contacta a DOVI S.A.S. y pide que registre o active uno de tus predios.</p>
+    <% } else if (!servicios.length) { %>
+      <p class="formulario__dato">Podrás enviar una solicitud cuando haya un servicio disponible.</p>
+    <% } else { %>
+      <form method="post" action="/cliente/solicitudes">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label for="servicio">Servicio</label>
+        <select name="servicio" id="servicio" required>
+          <option value="">Selecciona un servicio</option>
+          <% servicios.forEach((servicio) => { %>
+            <option value="<%= servicio.id %>"<%= Number(formulario.servicio) === servicio.id ? ' selected' : '' %>><%= servicio.nombre %></option>
+          <% }); %>
+        </select>
+        <label for="predio">Predio</label>
+        <select name="predio" id="predio" required>
+          <option value="">Selecciona un predio</option>
+          <% predios.forEach((predio) => { %>
+            <option value="<%= predio.id %>"<%= Number(formulario.predio) === predio.id ? ' selected' : '' %>><%= predio.nombre %></option>
+          <% }); %>
+        </select>
+        <label for="fecha">Fecha deseada</label>
+        <input type="date" name="fecha" id="fecha" min="<%= fechaMinima %>" value="<%= formulario.fecha || '' %>" required>
+        <label for="detalles">Detalles adicionales (opcional)</label>
+        <textarea name="detalles" id="detalles" maxlength="255" rows="3"><%= formulario.detalles || '' %></textarea>
+        <button class="boton boton--grande" type="submit">Enviar solicitud</button>
+      </form>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../../partials/cliente-fin') %>

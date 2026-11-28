@@ -2,12 +2,8 @@ const router = require('express').Router();
 const rateLimit = require('express-rate-limit');
 const auth = require('../controllers/auth.controller');
 const { requerirSesion } = require('../middlewares/auth');
+const { evitarCache } = require('../middlewares/cache');
 const { validarLogin, validarCambioClave } = require('../validators/auth.validator');
-
-function evitarCache(req, res, next) {
-  res.set('Cache-Control', 'no-store');
-  next();
-}
 
 const limitarLogin = rateLimit({
   windowMs: 15 * 60 * 1000,

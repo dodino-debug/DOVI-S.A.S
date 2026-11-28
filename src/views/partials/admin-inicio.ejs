@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -27,7 +26,7 @@
   <header class="barra">
     <div class="barra__interior">
 
-      <a class="barra__marca" href="/admin">
+      <a class="barra__marca" href="/admin/dashboard">
         <img class="barra__logo"
              src="/img/icon-192.png"
              alt=""
@@ -49,16 +48,7 @@
 
       <nav class="barra__menu" id="menu-admin">
 
-        <%
-          var enlaces = [
-            ['clientes', '/admin/clientes', 'Clientes'],
-            ['servicios', '/admin/servicios', 'Servicios'],
-            ['usuarios', '/admin/usuarios', 'Usuarios'],
-            ['reportes', '/admin/reportes', 'Reportes']
-          ];
-        %>
-
-        <% enlaces.forEach(function (e) { %>
+        <% (locals.enlaces || []).forEach(function (e) { %>
 
           <a href="<%= e[1] %>"
              <%- locals.activo === e[0] ? 'aria-current="page"' : '' %>>

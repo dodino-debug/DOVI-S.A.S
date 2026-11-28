@@ -1,0 +1,20 @@
+<%- include('../../partials/cliente-inicio', { titulo: 'Servicios', seccion: 'servicios' }) %>
+
+<section id="servicios" aria-labelledby="titulo-servicios">
+  <h2 id="titulo-servicios">Servicios disponibles</h2>
+  <% if (!servicios.length) { %>
+    <p>En este momento no hay servicios disponibles.</p>
+  <% } else { %>
+    <ul class="portal-servicios">
+      <% servicios.forEach((servicio) => { %>
+        <li>
+          <h3><%= servicio.nombre %></h3>
+          <% if (servicio.descripcion) { %><p><%= servicio.descripcion %></p><% } %>
+          <a class="boton" href="/cliente/solicitar?servicio=<%= servicio.id %>" aria-label="Solicitar <%= servicio.nombre %>">Solicitar</a>
+        </li>
+      <% }); %>
+    </ul>
+  <% } %>
+</section>
+
+<%- include('../../partials/cliente-fin') %>

@@ -8,7 +8,7 @@
   <p><a class="enlace-volver" href="/admin/servicios">← Volver al catálogo</a></p>
 </section>
 
-<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+<section class="tarjeta tarjeta--form tarjeta--espaciada">
   <form class="formulario" method="POST" novalidate
         action="<%= servicio.id ? '/admin/servicios/' + servicio.id : '/admin/servicios' %>">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

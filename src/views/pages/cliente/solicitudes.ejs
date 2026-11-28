@@ -1,0 +1,43 @@
+<%- include('../../partials/cliente-inicio', { titulo: 'Mis solicitudes', seccion: 'solicitudes' }) %>
+
+<section id="solicitudes" class="tarjeta" aria-labelledby="titulo-solicitudes">
+  <div class="tarjeta__cabecera">
+    <h2 id="titulo-solicitudes">Mis solicitudes</h2>
+    <a class="boton boton--grande" href="/cliente/solicitar">+ Nueva Solicitud</a>
+  </div>
+  <% if (locals.flash) { %>
+    <p class="flash flash--<%= flash.tipo %> portal-aviso" role="status"><%= flash.texto %></p>
+  <% } %>
+  <% if (!solicitudes.length) { %>
+    <p class="portal-aviso">Todavía no tienes solicitudes.</p>
+  <% } else { %>
+    <div class="tabla-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Número</th>
+            <th scope="col">Servicio</th>
+            <th scope="col">Predio</th>
+            <th scope="col">Fecha deseada</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Nota de DOVI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% solicitudes.forEach((solicitud) => { %>
+            <tr>
+              <td>#<%= solicitud.id %></td>
+              <td><%= solicitud.servicio %></td>
+              <td><%= solicitud.predio %></td>
+              <td><%= solicitud.fecha_deseada %></td>
+              <td><%= estados[solicitud.estado] || solicitud.estado %></td>
+              <td><%= solicitud.nota_admin || '—' %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../../partials/cliente-fin') %>

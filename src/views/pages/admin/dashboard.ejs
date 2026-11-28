@@ -1,4 +1,4 @@
-<%- include('../../partials/admin-inicio', { titulo: 'Tablero de Control' }) %>
+<%- include('../../partials/admin-inicio', { titulo: 'Tablero de Control', activo: 'dashboard' }) %>
 
 <section class="encabezado">
   <h1>Tablero de Control Operativo</h1>
@@ -23,10 +23,9 @@
 <section class="tarjeta">
   <h2>Solicitudes Recientes por Revisar</h2>
   <div class="tabla-scroll">
-    <table>
+    <table class="tabla-dashboard">
       <colgroup>
-        <col style="width: 8.5%"><col style="width: 14%"><col style="width: 18.2%">
-        <col style="width: 19.7%"><col style="width: 13.7%"><col style="width: 25.9%">
+        <col><col><col><col><col><col>
       </colgroup>
       <thead>
         <tr>

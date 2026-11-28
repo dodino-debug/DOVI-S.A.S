@@ -18,10 +18,9 @@
 
 <section class="tarjeta">
   <div class="tabla-scroll">
-    <table style="min-width: 980px;">
+    <table class="tabla--ancha tabla-clientes">
       <colgroup>
-        <col style="width: 24%"><col style="width: 16%"><col style="width: 16%">
-        <col style="width: 9%"><col style="width: 11%"><col style="width: 24%">
+        <col><col><col><col><col><col>
       </colgroup>
       <thead>
         <tr><th>Cliente</th><th>Teléfono</th><th>Estado</th><th>Predios</th><th>Solicitudes</th><th>Acciones</th></tr>
@@ -41,7 +40,7 @@
             <td>
               <div class="acciones">
                 <span class="insignia <%= c.activo ? 'insignia--ok' : 'insignia--off' %>">
-                  <%= c.activo ? 'ACTIVO' : 'INACTIVO' %>
+                  <%= c.activo ? 'ACTIVO' : 'INHABILITADO' %>
                 </span>
                 <% if (c.debe_cambiar_clave) { %>
                   <span class="insignia insignia--aviso">CLAVE TEMPORAL</span>

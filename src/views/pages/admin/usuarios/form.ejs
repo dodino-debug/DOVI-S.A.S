@@ -9,7 +9,7 @@
   <p><a class="enlace-volver" href="/admin/usuarios">← Volver a usuarios</a></p>
 </section>
 
-<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+<section class="tarjeta tarjeta--form tarjeta--espaciada">
   <form class="formulario" method="POST" novalidate
         action="<%= editando ? '/admin/usuarios/' + cuenta.id : '/admin/usuarios' %>">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
