@@ -2,6 +2,7 @@
   var INTERVALO_MS = 15000;
 
   var filas = document.querySelector('[data-filas]');
+  var filasActivos = document.querySelector('[data-filas-activos]');
   var aviso = document.querySelector('[data-aviso]');
   if (!filas) return;
 
@@ -15,30 +16,51 @@
     return td;
   }
 
-  function crearFila(s) {
+  function celdaEnlace(href, texto) {
+    var td = document.createElement('td');
+    var a = document.createElement('a');
+    a.className = 'boton';
+    a.href = href;
+    a.textContent = texto;
+    td.appendChild(a);
+    return td;
+  }
+
+  function filaVacia(mensaje) {
+    var tr = document.createElement('tr');
+    var td = celda(mensaje, 'vacio');
+    td.colSpan = 6;
+    tr.appendChild(td);
+    return tr;
+  }
+
+  function filaSolicitud(s) {
     var tr = document.createElement('tr');
     tr.appendChild(celda('#' + s.id, 'id'));
     tr.appendChild(celda(s.cliente, 'cliente'));
     tr.appendChild(celda(s.predio));
     tr.appendChild(celda(s.labor));
     tr.appendChild(celda(s.fechaDeseada));
-
-    var td = document.createElement('td');
-    var enlace = document.createElement('a');
-    enlace.className = 'boton';
-    enlace.href = '/admin/solicitudes/' + encodeURIComponent(s.id);
-    enlace.textContent = 'Programar Labor';
-    td.appendChild(enlace);
-    tr.appendChild(td);
+    tr.appendChild(celdaEnlace('/admin/solicitudes/' + encodeURIComponent(s.id), 'Programar Labor'));
     return tr;
   }
 
-  function crearFilaVacia() {
+  function filaActivo(a) {
     var tr = document.createElement('tr');
-    var td = celda('No hay solicitudes pendientes por revisar.', 'vacio');
-    td.colSpan = 6;
-    tr.appendChild(td);
+    tr.appendChild(celda(a.cliente, 'cliente'));
+    tr.appendChild(celda(a.predio));
+    tr.appendChild(celda(a.labor));
+    tr.appendChild(celda(a.hora));
+    tr.appendChild(celda(a.cuadrilla));
+    tr.appendChild(celdaEnlace('/admin/labores/' + encodeURIComponent(a.id), 'Ver'));
     return tr;
+  }
+
+  function llenar(cuerpo, lista, crearFila, mensajeVacio) {
+    if (!cuerpo) return;
+    cuerpo.replaceChildren();
+    if (lista.length === 0) cuerpo.appendChild(filaVacia(mensajeVacio));
+    else lista.forEach(function (elemento) { cuerpo.appendChild(crearFila(elemento)); });
   }
 
   function pintar(datos) {
@@ -47,12 +69,8 @@
       if (el) el.textContent = String(datos[clave]);
     });
 
-    filas.replaceChildren();
-    if (datos.solicitudes.length === 0) {
-      filas.appendChild(crearFilaVacia());
-    } else {
-      datos.solicitudes.forEach(function (s) { filas.appendChild(crearFila(s)); });
-    }
+    llenar(filas, datos.solicitudes, filaSolicitud, 'No hay solicitudes pendientes por revisar.');
+    llenar(filasActivos, datos.serviciosActivos || [], filaActivo, 'No hay labores en proceso en este momento.');
   }
 
   async function actualizar() {
@@ -65,7 +83,7 @@
         cache: 'no-store'
       });
       if (respuesta.status === 401 || respuesta.status === 403) {
-        window.location.href = '/login';
+        window.location.href = '/auth/login';
         return;
       }
       if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);

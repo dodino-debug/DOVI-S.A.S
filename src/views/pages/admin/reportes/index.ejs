@@ -1,0 +1,87 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Reportes', activo: 'reportes' }) %>
+
+<section class="encabezado">
+  <h1>Reporte de Labores Realizadas</h1>
+  <p>Labores completadas en el rango de fechas elegido</p>
+</section>
+
+<form class="filtros" method="GET" action="/admin/reportes">
+  <label>Desde <input type="date" name="desde" value="<%= filtros.desde %>" required></label>
+  <label>Hasta <input type="date" name="hasta" value="<%= filtros.hasta %>" required></label>
+  <button type="submit" class="boton boton--grande">Generar reporte</button>
+  <% if (datos) { %>
+    <a class="boton boton--grande boton--secundario"
+       href="/admin/reportes/exportar?desde=<%= filtros.desde %>&hasta=<%= filtros.hasta %>">Exportar a Excel</a>
+  <% } %>
+</form>
+
+<% if (error) { %><p class="flash flash--error" role="alert" style="margin-top: 20px;"><%= error %></p><% } %>
+
+<% if (datos) { %>
+<section class="metricas metricas--reporte">
+  <article class="metrica">
+    <p class="metrica__etiqueta">Labores realizadas</p>
+    <p class="metrica__valor"><%= datos.resumen.total %></p>
+  </article>
+  <% datos.resumen.porServicio.slice(0, 2).forEach(function (s) { %>
+    <article class="metrica">
+      <p class="metrica__etiqueta"><%= s.servicio %></p>
+      <p class="metrica__valor"><%= s.cantidad %></p>
+    </article>
+  <% }) %>
+</section>
+
+<section class="tarjeta">
+  <h2>Detalle</h2>
+  <div class="tabla-scroll">
+    <table style="min-width: 1040px;">
+      <colgroup>
+        <col style="width: 10%"><col style="width: 7%"><col style="width: 15%"><col style="width: 15%">
+        <col style="width: 16%"><col style="width: 17%"><col style="width: 20%">
+      </colgroup>
+      <thead>
+        <tr><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Predio</th><th>Labor</th><th>Cuadrilla</th><th>Observaciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (datos.filas.length === 0) { %>
+          <tr><td class="vacio" colspan="7">No hay labores completadas en ese rango.</td></tr>
+        <% } else { datos.filas.forEach(function (f) { %>
+          <tr>
+            <td><%= f.fecha %></td>
+            <td><%= f.hora %></td>
+            <td class="cliente"><%= f.cliente %></td>
+            <td><%= f.predio %></td>
+            <td><%= f.servicio %></td>
+            <td><%= f.cuadrilla %></td>
+            <td><%= f.observaciones || '—' %></td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>
+      <% if (datos.truncado) { %>Se muestran las primeras <%= limite %> labores; acota el rango para ver el resto.<% }
+         else { %>Periodo: <%= filtros.desde %> a <%= filtros.hasta %>.<% } %>
+    </span>
+  </div>
+</section>
+
+<% if (datos.resumen.porServicio.length > 0) { %>
+<section class="tarjeta">
+  <h2>Resumen por labor</h2>
+  <div class="tabla-scroll">
+    <table style="min-width: 400px;">
+      <thead><tr><th>Labor</th><th>Cantidad</th></tr></thead>
+      <tbody>
+        <% datos.resumen.porServicio.forEach(function (s) { %>
+          <tr><td class="cliente"><%= s.servicio %></td><td><%= s.cantidad %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<% } %>
+<% } %>
+
+<%- include('../../../partials/admin-fin') %>

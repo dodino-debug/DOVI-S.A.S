@@ -1,4 +1,4 @@
-// Textos que ve el usuario para los estados definidos en el diccionario de datos.
+// Textos y estilos de los estados definidos en el diccionario de datos.
 const ESTADO_SOLICITUD = {
   PENDIENTE: 'Pendiente revisión',
   APROBADA: 'Aprobada',
@@ -13,4 +13,14 @@ const ESTADO_LABOR = {
   CANCELADA: 'Cancelada'
 };
 
-module.exports = { ESTADO_SOLICITUD, ESTADO_LABOR };
+const CLASE_ESTADO = {
+  PENDIENTE: 'insignia--aviso',
+  APROBADA: 'insignia--ok',
+  RECHAZADA: 'insignia--rojo',
+  REAGENDADA: 'insignia--azul',
+  'EN PROCESO': 'insignia--azul',
+  COMPLETADA: 'insignia--ok',
+  CANCELADA: 'insignia--rojo'
+};
+
+module.exports = { ESTADO_SOLICITUD, ESTADO_LABOR, CLASE_ESTADO };

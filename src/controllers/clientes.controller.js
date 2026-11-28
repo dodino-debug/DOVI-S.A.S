@@ -2,9 +2,12 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const Cliente = require('../models/cliente.model');
 const Finca = require('../models/finca.model');
+const Servicio = require('../models/servicio.model');
+const Reporte = require('../models/reporte.model');
 const { claveTemporal } = require('../services/claves');
 const { ETIQUETA_ROL } = require('../config/roles');
 const { esId, texto, mensajesDeError } = require('../utils/entrada');
+const { leerRango } = require('../utils/fechas');
 
 const MENSAJE_DUPLICADO = 'Ya existe un usuario con ese correo.';
 
@@ -105,4 +108,38 @@ async function actualizar(req, res, next) {
   }
 }
 
-module.exports = { lista, formularioNuevo, crear, detalle, formularioEditar, actualizar };
+// RF12: historial de los servicios prestados a un cliente, con filtros por fecha y servicio.
+async function historial(req, res, next) {
+  try {
+    if (!esId(req.params.id)) return next();
+    const cliente = await Cliente.buscarPorId(Number(req.params.id));
+    if (!cliente) return next();
+
+    const rango = leerRango(req.query, 0);
+    const servicios = await Servicio.listar();
+    const servicioId = /^\d{1,9}$/.test(String(req.query.servicio)) ? Number(req.query.servicio) : null;
+
+    const resultado = rango.error
+      ? { filas: [], truncado: false }
+      : await Reporte.laboresRealizadas({
+          desde: rango.desde,
+          hasta: rango.hasta,
+          servicioId,
+          clienteId: cliente.id
+        });
+
+    res.render('pages/admin/clientes/historial', {
+      cliente,
+      servicios,
+      filas: resultado.filas,
+      truncado: resultado.truncado,
+      limite: Reporte.LIMITE,
+      error: rango.error,
+      filtros: { desde: rango.desde, hasta: rango.hasta, servicio: servicioId || '' }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { lista, formularioNuevo, crear, detalle, formularioEditar, actualizar, historial };

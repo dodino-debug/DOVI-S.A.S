@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="<%= csrfToken %>">
   <title>Portal de clientes | DOVI S.A.S.</title>
   <link rel="icon" href="/img/favicon.ico">
   <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/admin-extra.css">
   <link rel="stylesheet" href="/css/cliente.css">
 </head>
 <body class="portal-cliente">
@@ -24,6 +26,7 @@
           <button class="boton boton--secundario" type="submit">Cerrar sesión</button>
         </form>
       </nav>
+      <%- include('../../partials/campana') %>
     </div>
   </header>
 
@@ -128,5 +131,6 @@
     </section>
     <% } %>
   </main>
+  <script src="/js/notificaciones.js" defer></script>
 </body>
 </html>

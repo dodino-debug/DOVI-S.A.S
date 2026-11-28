@@ -30,6 +30,21 @@ body.portal-cliente {
   color: #2d5a27;
 }
 
+.portal-barra .campana {
+  margin-left: auto;
+}
+
+.portal-barra .campana__boton {
+  color: #2d5a27;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.portal-barra .campana__boton:hover,
+.portal-barra .campana__boton:focus-visible {
+  background: #ecf1eb;
+}
+
 .portal-barra a[aria-current="page"] {
   font-weight: 700;
   text-underline-offset: 4px;

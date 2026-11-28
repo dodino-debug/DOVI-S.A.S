@@ -18,9 +18,9 @@ const limitarLogin = rateLimit({
   message: 'Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.'
 });
 
-router.get('/', (req, res) => res.redirect('/login'));
-router.get('/login', evitarCache, auth.mostrarLogin);
-router.post('/login', evitarCache, limitarLogin, validarLogin, auth.procesarLogin);
+router.get(['/', '/login'], (req, res) => res.redirect('/auth/login'));
+router.get('/auth/login', evitarCache, auth.mostrarLogin);
+router.post(['/login', '/auth/login'], evitarCache, limitarLogin, validarLogin, auth.procesarLogin);
 router.post('/logout', auth.cerrarSesion);
 
 router.get('/cambiar-clave', evitarCache, requerirSesion, auth.mostrarCambioClave);

@@ -1,0 +1,102 @@
+{
+  "fecha": "2026-11-24",
+  "versionGit": "b3d4a2f",
+  "node": "v24.21.0",
+  "base": "PostgreSQL 18 local aislado",
+  "fechaSolicitada": "2026-12-01",
+  "fechaReagendada": "2026-12-02",
+  "resultados": {
+    "login": [
+      "APROBADO",
+      "Cuatro perfiles autenticados con redirección y destino HTTP 200. Supervisor y empleado llegan al mismo panel."
+    ],
+    "wrong": [
+      "APROBADO",
+      "Credencial incorrecta rechazada con HTTP 401."
+    ],
+    "logout": [
+      "APROBADO",
+      "Cierre y visita posterior a /admin redirigieron a /login."
+    ],
+    "roles": [
+      "APROBADO",
+      "Sesión ausente redirige en HTML y produce HTTP 401 en API. Roles ajenos reciben 403."
+    ],
+    "csrf": [
+      "APROBADO",
+      "POST ordinario sin token obtuvo 403. Nombre obligatorio vacío devolvió 400 y la sesión siguió activa."
+    ],
+    "staff": [
+      "APROBADO",
+      "Alta, supervisor asociado, rechazo del duplicado, edición visible y desactivación persistente."
+    ],
+    "newadmin": [
+      "APROBADO",
+      "La cuenta se creó y figura en el filtro administrador. PostgreSQL conserva una sola fila ADMINISTRADOR."
+    ],
+    "roleedit": [
+      "NO APROBADO",
+      "Se solicitó actualizar el rol por el flujo de edición. HTTP 302 y rol persistido EMPLEADO.\n+ actual - expected\n\n+ 'EMPLEADO'\n- 'ADMINISTRADOR'\n"
+    ],
+    "customers": [
+      "APROBADO",
+      "Alta de propietaria, edición, búsqueda y registro/edición de finca confirmados. Área cero recibió 400."
+    ],
+    "services": [
+      "APROBADO",
+      "Alta, edición y ocultación de servicio inactivo confirmadas. Duplicado sin distinguir mayúsculas rechazado."
+    ],
+    "request": [
+      "APROBADO",
+      "Tres solicitudes pendientes persistieron. El cliente propio las consulta y la segunda cuenta no las recibe."
+    ],
+    "invalidrequest": [
+      "APROBADO",
+      "Fecha pasada y selección de predio ajeno rechazadas con 400, sin alta adicional."
+    ],
+    "decision": [
+      "APROBADO",
+      "Las tres decisiones persistieron con historial. Motivo vacío y fecha igual recibieron 400. Segunda decisión recibió 409."
+    ],
+    "reschedule": [
+      "NO APROBADO",
+      "El diagrama de actividades RF06 marca Reagendada. La fecha cambió y el estado persistido fue APROBADA.\n+ actual - expected\n\n+ 'APROBADA'\n- 'REAGENDADA'\n"
+    ],
+    "status": [
+      "APROBADO",
+      "Estados y motivo aparecen cuando el cliente vuelve a consultar."
+    ],
+    "workview": [
+      "NO APROBADO",
+      "Panel /empleado HTTP 200 con vista provisional. Ruta mostrada en la secuencia /empleado/labores HTTP 404."
+    ],
+    "reports": [
+      "NO APROBADO",
+      "Reportes devolvió HTTP 200 y una vista provisional sin controles de fecha."
+    ],
+    "dashboard": [
+      "NO APROBADO",
+      "El resumen ofrece pendientes, laboresHoy, empleadosEnCampo y solicitudes. Carece de servicios activos."
+    ],
+    "hash": [
+      "APROBADO",
+      "Cuenta sintética y cuenta creada mediante formulario tienen BCrypt de coste 12. Se omiten valores sensibles."
+    ],
+    "change": [
+      "APROBADO",
+      "Cambio inicial obligatorio. Confirmación desigual rechazada. Clave anterior invalidada."
+    ],
+    "timing": [
+      "APROBADO",
+      "Diez lecturas locales de solicitudes HTTP 200. Latencias en ms: 8, 8, 7, 8, 8, 7, 8, 7, 8, 7."
+    ],
+    "integrity": [
+      "APROBADO",
+      "PostgreSQL rechazó una pareja cliente/predio ajena por FK, SQLSTATE 23503. Transacción revertida."
+    ],
+    "logging": [
+      "NO APROBADO",
+      "Ante indisponibilidad controlada de PostgreSQL, /salud devolvió HTTP 500 y la consola registró el error sin ruta de operación ni contexto de correlación."
+    ]
+  }
+}

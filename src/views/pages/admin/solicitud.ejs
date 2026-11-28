@@ -1,8 +1,8 @@
-<%- include('../../partials/admin-inicio', { titulo: 'Solicitud #' + solicitud.id }) %>
+<%- include('../../partials/admin-inicio', { titulo: 'Solicitud #' + solicitud.id, activo: 'solicitudes' }) %>
 
 <section class="encabezado">
   <h1>Solicitud #<%= solicitud.id %></h1>
-  <p><a class="enlace-volver" href="/admin">← Volver al tablero</a></p>
+  <p><a class="enlace-volver" href="/admin/solicitudes">← Volver a solicitudes</a></p>
 </section>
 
 <section class="tarjeta" style="margin-top: 34px;">
@@ -12,7 +12,7 @@
     <dt>Predio</dt><dd><%= solicitud.predio %></dd>
     <dt>Ubicación</dt><dd><%= solicitud.ubicacion %></dd>
     <dt>Labor solicitada</dt><dd><%= solicitud.servicio %></dd>
-    <dt><%= solicitud.estado === 'APROBADA' ? 'Fecha aprobada' : 'Fecha deseada' %></dt><dd><%= solicitud.fecha_deseada %></dd>
+    <dt><%= solicitud.estado === 'REAGENDADA' ? 'Fecha reagendada' : solicitud.estado === 'APROBADA' ? 'Fecha aprobada' : 'Fecha deseada' %></dt><dd><%= solicitud.fecha_deseada %></dd>
     <dt>Detalles</dt><dd class="detalle__texto"><%= solicitud.detalles || 'Sin detalles' %></dd>
     <dt>Registrada</dt><dd><%= solicitud.creada %></dd>
     <% if (solicitud.nota_admin) { %>
@@ -39,7 +39,7 @@
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label for="fecha">Nueva fecha</label>
       <input type="date" id="fecha" name="fecha" min="<%= fechaMinima %>" value="<%= formulario.fecha || '' %>" required>
-      <button type="submit" class="boton">Reagendar y aprobar</button>
+      <button type="submit" class="boton">Reagendar</button>
     </form>
     <form method="post" action="/admin/solicitudes/<%= solicitud.id %>/rechazar">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -50,13 +50,60 @@
   </section>
 <% } %>
 
+<% if (programable) { %>
+  <section class="tarjeta">
+    <h2>Programar labor</h2>
+    <% if (personal.length) { %>
+      <form class="formulario" method="post" action="/admin/solicitudes/<%= solicitud.id %>/labores">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <p class="formulario__dato">Ubicación del predio: <%= solicitud.ubicacion %></p>
+        <label for="fecha-programada">Fecha</label>
+        <input type="date" id="fecha-programada" name="fecha" min="<%= fechaMinima %>"
+               value="<%= formulario.fecha || (solicitud.fecha_deseada >= fechaMinima ? solicitud.fecha_deseada : '') %>" required>
+        <label for="hora-programada">Hora de Bogotá</label>
+        <input type="time" id="hora-programada" name="hora" value="<%= formulario.hora || '' %>" required>
+        <fieldset class="formulario__dato">
+          <legend>Empleados asignados</legend>
+          <% for (const persona of personal) { %>
+            <label class="formulario__check">
+              <input type="checkbox" name="empleados" value="<%= persona.id %>"<%= formulario.empleados?.includes(persona.id) ? ' checked' : '' %>>
+              <%= persona.nombre %> (<%= persona.correo %>)
+            </label>
+          <% } %>
+        </fieldset>
+        <button type="submit" class="boton">Programar y asignar</button>
+      </form>
+    <% } else { %>
+      <p class="tarjeta__nota">Activa al menos una cuenta de empleado desde <a href="/admin/usuarios">Usuarios</a> para asignar la labor.</p>
+    <% } %>
+  </section>
+<% } %>
+
+<% if (labores.length) { %>
+  <section class="tarjeta">
+    <h2>Labores programadas</h2>
+    <div class="formulario">
+      <ul>
+        <% for (const labor of labores) { %>
+          <li>#<%= labor.id %> · <%= labor.fecha %> a las <%= labor.hora %> · <%= estadosLabor[labor.estado] %>
+            <br>Personal asignado: <%= labor.personal.join(', ') || 'Sin asignar' %>
+            <% if (labor.observaciones) { %>
+              <br>Observación: <span class="detalle__texto"><%= labor.observaciones %></span>
+            <% } %>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </section>
+<% } %>
+
 <% if (historial.length) { %>
   <section class="tarjeta formulario">
     <h2>Historial de decisiones</h2>
     <ul>
       <% for (const evento of historial) { %>
         <li>
-          <%= evento.registrada %> · <%= evento.accion === 'REAGENDADA' ? 'Reagendada y aprobada' : evento.accion === 'APROBADA' ? 'Aprobada' : 'Rechazada' %>
+          <%= evento.registrada %> · <%= evento.accion === 'REAGENDADA' ? 'Reagendada' : evento.accion === 'APROBADA' ? 'Aprobada' : 'Rechazada' %>
           <% if (evento.accion === 'REAGENDADA') { %>
             (<%= evento.fecha_anterior %> → <%= evento.fecha_nueva %>)
           <% } %>

@@ -56,4 +56,36 @@
   </div>
 </section>
 
+<section class="tarjeta">
+  <h2>Servicios Activos</h2>
+  <div class="tabla-scroll">
+    <table>
+      <colgroup>
+        <col style="width: 17%"><col style="width: 17%"><col style="width: 20%">
+        <col style="width: 8%"><col style="width: 26%"><col style="width: 12%">
+      </colgroup>
+      <thead>
+        <tr><th>Cliente</th><th>Predio</th><th>Labor</th><th>Hora</th><th>Cuadrilla</th><th>Acciones</th></tr>
+      </thead>
+      <tbody data-filas-activos>
+        <% if (activos.length === 0) { %>
+          <tr><td class="vacio" colspan="6">No hay labores en proceso en este momento.</td></tr>
+        <% } else { activos.forEach(function (a) { %>
+          <tr>
+            <td class="cliente"><%= a.cliente %></td>
+            <td><%= a.predio %></td>
+            <td><%= a.labor %></td>
+            <td><%= a.hora %></td>
+            <td><%= a.cuadrilla %></td>
+            <td><a class="boton" href="/admin/labores/<%= a.id %>">Ver</a></td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>Labores que están en proceso en este momento.</span>
+  </div>
+</section>
+
 <%- include('../../partials/admin-fin', { scripts: ['/js/dashboard-admin.js'] }) %>

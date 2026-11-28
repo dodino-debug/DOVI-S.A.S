@@ -1,0 +1,59 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Solicitudes', activo: 'solicitudes' }) %>
+
+<section class="encabezado">
+  <h1>Solicitudes de Servicio</h1>
+  <p>Revisa las solicitudes de los clientes y programa sus labores</p>
+</section>
+
+<form class="filtros" method="GET" action="/admin/solicitudes">
+  <label>Estado
+    <select name="estado">
+      <option value="">Todos</option>
+      <% Object.keys(ui.ESTADO_SOLICITUD).forEach(function (e) { %>
+        <option value="<%= e %>"<%- filtro === e ? ' selected' : '' %>><%= ui.ESTADO_SOLICITUD[e] %></option>
+      <% }) %>
+    </select>
+  </label>
+  <button type="submit" class="boton boton--secundario">Filtrar</button>
+</form>
+
+<section class="tarjeta">
+  <div class="tabla-scroll">
+    <table style="min-width: 980px;">
+      <colgroup>
+        <col style="width: 7%"><col style="width: 16%"><col style="width: 16%"><col style="width: 18%">
+        <col style="width: 12%"><col style="width: 13%"><col style="width: 18%">
+      </colgroup>
+      <thead>
+        <tr><th>ID</th><th>Cliente</th><th>Predio</th><th>Labor Solicitada</th><th>Fecha Deseada</th><th>Estado</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (solicitudes.length === 0) { %>
+          <tr><td class="vacio" colspan="7">No hay solicitudes con ese filtro.</td></tr>
+        <% } else { solicitudes.forEach(function (s) { %>
+          <tr>
+            <td class="id">#<%= s.id %></td>
+            <td class="cliente"><%= s.cliente %></td>
+            <td><%= s.predio %></td>
+            <td><%= s.servicio %></td>
+            <td><%= s.fecha_deseada %></td>
+            <td><span class="insignia <%= ui.CLASE_ESTADO[s.estado] %>"><%= ui.ESTADO_SOLICITUD[s.estado] %></span></td>
+            <td>
+              <div class="acciones">
+                <a class="boton boton--secundario" href="/admin/solicitudes/<%= s.id %>">Revisar</a>
+                <% if (s.por_programar) { %>
+                  <a class="boton" href="/admin/labores/nueva?solicitud=<%= s.id %>">Programar</a>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>Se muestran las 200 solicitudes más relevantes: primero las pendientes y reagendadas.</span>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

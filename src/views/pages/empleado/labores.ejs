@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <title>Mis labores | DOVI S.A.S.</title>
+  <link rel="icon" href="/img/favicon.ico">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/admin-extra.css">
+  <link rel="stylesheet" href="/css/cliente.css">
+  <link rel="stylesheet" href="/css/empleado.css">
+</head>
+<body class="portal-cliente">
+  <header class="portal-barra">
+    <div class="contenedor portal-barra__interior">
+      <a class="portal-marca" href="/empleado">
+        <img src="/img/icon-192.png" width="44" height="44" alt="">
+        DOVI S.A.S.
+      </a>
+      <nav aria-label="Panel del empleado">
+        <a href="/cambiar-clave">Cambiar contraseña</a>
+        <form method="post" action="/logout">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="boton boton--secundario" type="submit">Cerrar sesión</button>
+        </form>
+      </nav>
+      <%- include('../../partials/campana') %>
+    </div>
+  </header>
+
+  <main class="contenedor portal agenda">
+    <header class="agenda__cabecera">
+      <h1>Mis labores</h1>
+      <% if (grupos.length) { %>
+        <nav class="agenda__accesos" aria-label="Secciones de la agenda">
+          <% for (const grupo of grupos) { %>
+            <a href="#<%= grupo.id %>"><%= grupo.titulo %> <span>(<%= grupo.labores.length %>)</span></a>
+          <% } %>
+        </nav>
+      <% } %>
+    </header>
+    <% if (locals.flash) { %>
+      <p class="flash flash--<%= flash.tipo %>" role="<%= flash.tipo === 'error' ? 'alert' : 'status' %>"><%= flash.texto %></p>
+    <% } %>
+    <% if (!grupos.length) { %>
+      <p class="agenda__vacia">Todavía no tienes labores asignadas.</p>
+    <% } else { %>
+      <% for (const grupo of grupos) { %>
+        <section class="agenda__grupo" id="<%= grupo.id %>" aria-labelledby="titulo-<%= grupo.id %>">
+          <h2 id="titulo-<%= grupo.id %>"><%= grupo.titulo %></h2>
+          <ul class="agenda__labores">
+            <% for (const labor of grupo.labores) { %>
+              <li class="agenda__labor">
+                <div class="agenda__turno">
+                  <time datetime="<%= labor.fecha %>T<%= labor.hora %>-05:00">
+                    <strong><%= labor.hora %></strong>
+                    <span><%= labor.fechaVisible %></span>
+                  </time>
+                  <span class="etiqueta-estado etiqueta-estado--<%= labor.estiloEstado %>"><%= labor.estadoVisible %></span>
+                </div>
+                <h3><%= labor.servicio %></h3>
+                <p class="agenda__referencia">Labor #<%= labor.id %></p>
+                <div class="agenda__predio">
+                  <p><strong><%= labor.predio %></strong></p>
+                  <% if (labor.ubicacion && !(labor.mapa && /^https:\/\//i.test(labor.ubicacion.trim()))) { %>
+                    <p><%= labor.ubicacion %></p>
+                  <% } %>
+                  <% if (labor.mapa) { %>
+                    <a class="boton boton--secundario" href="<%= labor.mapa %>" referrerpolicy="no-referrer">Ver en mapa</a>
+                  <% } %>
+                </div>
+                <% if (labor.observaciones) { %>
+                  <div class="agenda__observacion">
+                    <strong>Observación</strong>
+                    <p><%= labor.observaciones %></p>
+                  </div>
+                <% } %>
+                <% if (labor.estado === 'PENDIENTE') { %>
+                  <form class="agenda__avance" method="post" action="/empleado/labores/<%= labor.id %>/iniciar">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button class="boton" type="submit">Iniciar labor</button>
+                  </form>
+                <% } else if (labor.estado === 'EN PROCESO') { %>
+                  <form class="agenda__avance" method="post" action="/empleado/labores/<%= labor.id %>/completar">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <label for="observaciones-<%= labor.id %>">Observación de cierre (opcional)</label>
+                    <textarea id="observaciones-<%= labor.id %>" name="observaciones" rows="3" maxlength="255"></textarea>
+                    <button class="boton" type="submit">Marcar como completada</button>
+                  </form>
+                <% } %>
+              </li>
+            <% } %>
+          </ul>
+        </section>
+      <% } %>
+    <% } %>
+  </main>
+  <script src="/js/notificaciones.js" defer></script>
+</body>
+</html>

@@ -22,7 +22,7 @@
       <p class="auth__error" role="alert"><%= error %></p>
     <% } %>
 
-    <form method="POST" action="/login" novalidate>
+    <form method="POST" action="/auth/login" novalidate>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
       <label for="correo">Correo Electrónico</label>

@@ -25,9 +25,10 @@ function verificarCsrf(req, res, next) {
 
   if (valido) return next();
 
-  if (req.method === 'POST' && ['/login', '/cambiar-clave'].includes(req.path)) {
+  const esLogin = ['/login', '/auth/login'].includes(req.path);
+  if (req.method === 'POST' && (esLogin || req.path === '/cambiar-clave')) {
     const usuario = req.session.usuario;
-    if (req.path === '/login' && usuario) {
+    if (esLogin && usuario) {
       return res.redirect(303, rutaInicial(usuario));
     }
 

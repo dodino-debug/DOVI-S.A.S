@@ -1,0 +1,129 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Solicitud #' + solicitud.id, activo: 'solicitudes' }) %>
+
+<section class="encabezado encabezado--accion">
+  <div>
+    <h1>Solicitud #<%= solicitud.id %></h1>
+    <p><a class="enlace-volver" href="/admin/solicitudes">← Volver a solicitudes</a></p>
+  </div>
+  <% if (puedeProgramar) { %>
+    <a class="boton boton--grande" href="/admin/labores/nueva?solicitud=<%= solicitud.id %>">Programar Labor</a>
+  <% } %>
+</section>
+
+<% if (errores.length) { %>
+  <ul class="errores" role="alert" style="margin-top: 24px;">
+    <% errores.forEach(function (e) { %><li><%= e %></li><% }) %>
+  </ul>
+<% } %>
+
+<section class="tarjeta" style="margin-top: 34px;">
+  <dl class="detalle">
+    <dt>Estado</dt>
+    <dd><span class="insignia <%= ui.CLASE_ESTADO[solicitud.estado] %>"><%= ui.ESTADO_SOLICITUD[solicitud.estado] %></span></dd>
+    <dt>Cliente</dt>
+    <dd>
+      <a class="enlace-volver" href="/admin/clientes/<%= solicitud.cliente_id %>"><%= solicitud.cliente %></a>
+      <span class="dato-secundario">Tel. <%= solicitud.telefono %></span>
+    </dd>
+    <dt>Predio</dt><dd><%= solicitud.predio %> (<%= Number(solicitud.hectareas).toLocaleString('es-CO', { maximumFractionDigits: 2 }) %> ha)</dd>
+    <dt>Ubicación</dt><dd><%= solicitud.ubicacion %></dd>
+    <dt>Labor solicitada</dt><dd><%= solicitud.servicio %></dd>
+    <dt>Fecha deseada</dt><dd><%= solicitud.fecha_deseada %></dd>
+    <dt>Detalles</dt><dd class="detalle__texto"><%= solicitud.detalles || 'Sin detalles' %></dd>
+    <dt>Nota para el cliente</dt><dd class="detalle__texto"><%= solicitud.nota_admin || '—' %></dd>
+    <dt>Registrada</dt><dd><%= solicitud.creada %></dd>
+  </dl>
+</section>
+
+<% if (labores.length) { %>
+<section class="tarjeta">
+  <h2>Labores programadas</h2>
+  <div class="tabla-scroll">
+    <table style="min-width: 700px;">
+      <thead><tr><th>Labor</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Cuadrilla</th><th>Acciones</th></tr></thead>
+      <tbody>
+        <% labores.forEach(function (l) { %>
+          <tr>
+            <td class="id">#<%= l.id %></td>
+            <td><%= l.fecha %></td>
+            <td><%= l.hora %></td>
+            <td><span class="insignia <%= ui.CLASE_ESTADO[l.estado] %>"><%= ui.ESTADO_LABOR[l.estado] %></span></td>
+            <td><%= l.cuadrilla %></td>
+            <td><a class="boton" href="/admin/labores/<%= l.id %>">Ver</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<% } %>
+
+<% if (puedeDecidir) { %>
+<section class="tarjeta">
+  <h2>Decisión</h2>
+  <div class="decisiones">
+
+    <details class="decision"<%- abierta === 'aprobar' ? ' open' : '' %>>
+      <summary>Aprobar</summary>
+      <form class="formulario" method="POST" action="/admin/solicitudes/<%= solicitud.id %>/aprobar" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label for="nota-aprobar">Nota para el cliente (opcional)</label>
+        <textarea id="nota-aprobar" name="nota" rows="2" maxlength="255"><%= abierta === 'aprobar' ? valores.nota : '' %></textarea>
+        <div class="formulario__acciones">
+          <button type="submit" class="boton boton--grande">Aprobar</button>
+          <button type="submit" name="programar" value="1" class="boton boton--grande">Aprobar y programar labor</button>
+        </div>
+      </form>
+    </details>
+
+    <details class="decision"<%- abierta === 'reagendar' ? ' open' : '' %>>
+      <summary>Reagendar</summary>
+      <form class="formulario" method="POST" action="/admin/solicitudes/<%= solicitud.id %>/reagendar" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label for="fecha-reagendar">Nueva fecha</label>
+        <input id="fecha-reagendar" name="fecha" type="date" value="<%= abierta === 'reagendar' ? valores.fecha : '' %>" required>
+        <label for="nota-reagendar">Nota para el cliente (opcional)</label>
+        <textarea id="nota-reagendar" name="nota" rows="2" maxlength="255"><%= abierta === 'reagendar' ? valores.nota : '' %></textarea>
+        <div class="formulario__acciones">
+          <button type="submit" class="boton boton--grande boton--secundario">Reagendar</button>
+        </div>
+      </form>
+    </details>
+
+    <details class="decision"<%- abierta === 'rechazar' ? ' open' : '' %>>
+      <summary>Rechazar</summary>
+      <form class="formulario" method="POST" action="/admin/solicitudes/<%= solicitud.id %>/rechazar"
+            data-confirmar="¿Rechazar la solicitud #<%= solicitud.id %>? Se notificará al cliente." novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label for="nota-rechazar">Motivo del rechazo</label>
+        <textarea id="nota-rechazar" name="nota" rows="2" maxlength="255" required><%= abierta === 'rechazar' ? valores.nota : '' %></textarea>
+        <div class="formulario__acciones">
+          <button type="submit" class="boton boton--grande boton--peligro">Rechazar</button>
+        </div>
+      </form>
+    </details>
+
+  </div>
+  <div class="tarjeta__nota">
+    <span>Al decidir se notifica al cliente. Una solicitud aprobada o rechazada ya no se puede cambiar.</span>
+  </div>
+</section>
+<% } %>
+
+<% if (historial.length) { %>
+  <section class="tarjeta">
+    <h2>Historial de decisiones</h2>
+    <ul class="formulario">
+      <% for (const evento of historial) { %>
+        <li>
+          <%= evento.registrada %> · <%= ui.ESTADO_SOLICITUD[evento.accion] %>
+          <% if (evento.fecha_anterior !== evento.fecha_nueva) { %>
+            (<%= evento.fecha_anterior %> → <%= evento.fecha_nueva %>)
+          <% } %>
+        </li>
+      <% } %>
+    </ul>
+  </section>
+<% } %>
+
+<%- include('../../../partials/admin-fin') %>

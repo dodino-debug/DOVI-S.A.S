@@ -1,0 +1,77 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Labor #' + labor.id, activo: 'labores' }) %>
+
+<section class="encabezado encabezado--accion">
+  <div>
+    <h1>Labor #<%= labor.id %></h1>
+    <p><a class="enlace-volver" href="/admin/labores">← Volver a labores</a></p>
+  </div>
+  <% if (puedeEditar) { %>
+    <a class="boton boton--grande" href="/admin/labores/<%= labor.id %>/editar">Editar fecha y hora</a>
+  <% } %>
+</section>
+
+<% if (errores.length) { %>
+  <ul class="errores" role="alert" style="margin-top: 24px;">
+    <% errores.forEach(function (e) { %><li><%= e %></li><% }) %>
+  </ul>
+<% } %>
+
+<section class="tarjeta" style="margin-top: 34px;">
+  <dl class="detalle">
+    <dt>Estado</dt>
+    <dd><span class="insignia <%= ui.CLASE_ESTADO[labor.estado] %>"><%= ui.ESTADO_LABOR[labor.estado] %></span></dd>
+    <dt>Solicitud</dt>
+    <dd><a class="enlace-volver" href="/admin/solicitudes/<%= labor.solicitud_id %>">#<%= labor.solicitud_id %></a></dd>
+    <dt>Cliente</dt>
+    <dd><a class="enlace-volver" href="/admin/clientes/<%= labor.cliente_id %>"><%= labor.cliente %></a></dd>
+    <dt>Labor</dt><dd><%= labor.servicio %></dd>
+    <dt>Predio</dt><dd><%= labor.predio %></dd>
+    <dt>Ubicación</dt><dd><%= labor.ubicacion %></dd>
+    <dt>Fecha programada</dt><dd><%= labor.fecha %></dd>
+    <dt>Hora de inicio</dt><dd><%= labor.hora %></dd>
+    <dt>Cuadrilla</dt>
+    <dd>
+      <% if (labor.cuadrilla.length === 0) { %>Sin asignar<% } else { %>
+        <% labor.cuadrilla.forEach(function (e, i) { %><%= i ? ', ' : '' %><%= e.nombre %><%= e.es_supervisor ? ' (supervisor)' : '' %><%= e.activo ? '' : ' (inactivo)' %><% }) %>
+      <% } %>
+    </dd>
+    <dt>Observaciones</dt><dd class="detalle__texto"><%= labor.observaciones || '—' %></dd>
+  </dl>
+</section>
+
+<% if (siguientes.length) { %>
+<section class="tarjeta">
+  <h2>Cambiar estado</h2>
+  <form class="formulario" method="POST" action="/admin/labores/<%= labor.id %>/estado" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="estado">Nuevo estado</label>
+    <select id="estado" name="estado">
+      <% siguientes.forEach(function (e) { %>
+        <option value="<%= e %>"><%= ui.ESTADO_LABOR[e] %></option>
+      <% }) %>
+    </select>
+    <label for="observaciones">Observaciones (opcional, reemplazan a las anteriores)</label>
+    <textarea id="observaciones" name="observaciones" rows="2" maxlength="255"></textarea>
+    <div class="formulario__acciones">
+      <button type="submit" class="boton boton--grande">Guardar estado</button>
+    </div>
+  </form>
+</section>
+<% } %>
+
+<% if (puedeAsignar) { %>
+<section class="tarjeta">
+  <h2>Cuadrilla</h2>
+  <form class="formulario" method="POST" action="/admin/labores/asignar" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input type="hidden" name="id_labor" value="<%= labor.id %>">
+    <%- include('../../../partials/cuadrilla', { empleados: empleados, seleccionados: asignados }) %>
+    <p class="formulario__ayuda">Debes dejar al menos un empleado. Se notificará solo a los empleados que agregues.</p>
+    <div class="formulario__acciones">
+      <button type="submit" class="boton boton--grande">Guardar cuadrilla</button>
+    </div>
+  </form>
+</section>
+<% } %>
+
+<%- include('../../../partials/admin-fin') %>

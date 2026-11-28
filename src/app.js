@@ -7,6 +7,7 @@ const { tokenCsrf, verificarCsrf } = require('./middlewares/csrf');
 const authRoutes = require('./routes/auth');
 const panelesRoutes = require('./routes/paneles');
 const adminRoutes = require('./routes/admin');
+const notificacionesRoutes = require('./routes/notificaciones');
 const flash = require('./middlewares/flash');
 const sesionVigente = require('./middlewares/sesion-vigente');
 
@@ -46,6 +47,7 @@ app.use(tokenCsrf);
 app.use(verificarCsrf);
 
 app.use(authRoutes);
+app.use(notificacionesRoutes);
 app.use(adminRoutes);
 app.use(panelesRoutes);
 

@@ -5,7 +5,10 @@
     <h1><%= cliente.nombre %></h1>
     <p><a class="enlace-volver" href="/admin/clientes">← Volver a clientes</a></p>
   </div>
-  <a class="boton boton--grande" href="/admin/clientes/<%= cliente.id %>/editar">Editar Cliente</a>
+  <div class="acciones">
+    <a class="boton boton--grande boton--secundario" href="/admin/clientes/<%= cliente.id %>/historial">Ver historial</a>
+    <a class="boton boton--grande" href="/admin/clientes/<%= cliente.id %>/editar">Editar Cliente</a>
+  </div>
 </section>
 
 <section class="tarjeta" style="margin-top: 34px;">

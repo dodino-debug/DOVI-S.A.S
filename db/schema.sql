@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS solicitudes (
 );
 CREATE INDEX IF NOT EXISTS idx_solicitudes_estado ON solicitudes (estado_solicitud, fecha_creacion DESC);
 
--- Historial de decisiones administrativas. Reagendar deja la solicitud aprobada.
+-- Historial de decisiones administrativas.
 CREATE TABLE IF NOT EXISTS solicitud_historial (
   id_historial   SERIAL PRIMARY KEY,
   id_solicitud   INTEGER NOT NULL REFERENCES solicitudes(id_solicitud) ON DELETE CASCADE,
@@ -112,6 +112,19 @@ CREATE TABLE IF NOT EXISTS labor_empleado (
   id_empleado INTEGER NOT NULL REFERENCES usuarios(id_usuario),
   PRIMARY KEY (id_labor, id_empleado)
 );
+
+-- ===== Notificaciones (RF13) =====
+-- [+] El documento las usa en los diagramas de secuencia pero no las incluye en el ER.
+CREATE TABLE IF NOT EXISTS notificaciones (
+  id_notificacion SERIAL PRIMARY KEY,
+  id_usuario      INTEGER NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+  mensaje         VARCHAR(255) NOT NULL,
+  enlace          VARCHAR(200),
+  leido           BOOLEAN NOT NULL DEFAULT FALSE,
+  fecha_creacion  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_notificaciones_usuario
+  ON notificaciones (id_usuario, leido, fecha_creacion DESC);
 
 -- ===== Sesiones (técnica, para connect-pg-simple) =====
 CREATE TABLE IF NOT EXISTS session (

@@ -1,0 +1,40 @@
+<%- include('../../partials/admin-inicio', { titulo: 'Solicitudes', activo: 'solicitudes' }) %>
+
+<section class="encabezado">
+  <h1>Solicitudes</h1>
+</section>
+
+<section class="tarjeta">
+  <% if (!solicitudes.length) { %>
+    <p class="formulario">Todavía no hay solicitudes.</p>
+  <% } else { %>
+    <div class="tabla-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Solicitud</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Servicio</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Labor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const solicitud of solicitudes) { %>
+            <tr>
+              <td><a href="/admin/solicitudes/<%= solicitud.id %>">#<%= solicitud.id %></a></td>
+              <td><%= solicitud.cliente %></td>
+              <td><%= solicitud.servicio %></td>
+              <td><%= solicitud.fecha %></td>
+              <td><%= estados[solicitud.estado] %></td>
+              <td><%= solicitud.programada ? 'Programada' : '—' %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../../partials/admin-fin') %>

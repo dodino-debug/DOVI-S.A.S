@@ -1,0 +1,12 @@
+<fieldset class="cuadrilla">
+  <legend>Cuadrilla (empleados asignados)</legend>
+  <% if (empleados.length === 0) { %>
+    <p class="formulario__ayuda">No hay empleados activos. Créalos en <a class="enlace-volver" href="/admin/usuarios/nuevo">Usuarios</a>.</p>
+  <% } %>
+  <% empleados.forEach(function (e) { %>
+    <label class="formulario__check" for="emp-<%= e.id %>">
+      <input id="emp-<%= e.id %>" type="checkbox" name="empleados" value="<%= e.id %>"<%- seleccionados.indexOf(e.id) !== -1 ? ' checked' : '' %>>
+      <%= e.nombre %><%= e.es_supervisor ? ' (supervisor)' : '' %><%= e.activo ? '' : ' (inactivo)' %>
+    </label>
+  <% }) %>
+</fieldset>

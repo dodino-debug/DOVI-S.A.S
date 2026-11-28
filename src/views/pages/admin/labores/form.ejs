@@ -1,0 +1,72 @@
+<%- include('../../../partials/admin-inicio', {
+  titulo: editando ? 'Editar labor' : 'Programar labor',
+  activo: 'labores'
+}) %>
+
+<section class="encabezado">
+  <h1><%= editando ? 'Editar Labor #' + labor.id : 'Programar Labor' %></h1>
+  <p>
+    <a class="enlace-volver" href="<%= editando ? '/admin/labores/' + labor.id : '/admin/labores' %>">← Volver</a>
+  </p>
+</section>
+
+<section class="tarjeta tarjeta--form" style="margin-top: 34px;">
+  <% if (!editando && solicitudes.length === 0) { %>
+    <p class="vacio" style="padding: 32px 24px; margin: 0;">
+      No hay solicitudes aprobadas o reagendadas pendientes de programar.
+      <a class="enlace-volver" href="/admin/solicitudes?estado=PENDIENTE">Revisa las solicitudes pendientes</a>.
+    </p>
+  <% } else { %>
+  <form class="formulario" method="POST" novalidate
+        action="<%= editando ? '/admin/labores/' + labor.id : '/admin/labores' %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <% if (errores.length) { %>
+      <ul class="errores" role="alert">
+        <% errores.forEach(function (e) { %><li><%= e %></li><% }) %>
+      </ul>
+    <% } %>
+
+    <% if (editando) { %>
+      <p class="formulario__dato"><strong>Solicitud:</strong>
+        <a class="enlace-volver" href="/admin/solicitudes/<%= resumen.solicitud_id %>">#<%= resumen.solicitud_id %></a>
+        · <%= resumen.servicio %> · <%= resumen.cliente %></p>
+      <p class="formulario__dato"><strong>Ubicación:</strong> <%= resumen.predio %>: <%= resumen.ubicacion %></p>
+    <% } else { %>
+      <label for="solicitud_id">Solicitud aprobada o reagendada</label>
+      <select id="solicitud_id" name="solicitud_id" required>
+        <option value="">Elige una solicitud…</option>
+        <% solicitudes.forEach(function (s) { %>
+          <option value="<%= s.id %>"<%- Number(labor.solicitud_id) === s.id ? ' selected' : '' %>>
+            #<%= s.id %> · <%= s.cliente %> · <%= s.predio %> · <%= s.servicio %> (deseada <%= s.fecha_deseada %>)
+          </option>
+        <% }) %>
+      </select>
+      <p class="formulario__ayuda">La ubicación de la labor es la del predio de la solicitud.</p>
+    <% } %>
+
+    <label for="fecha">Fecha programada</label>
+    <input id="fecha" name="fecha" type="date" min="<%= hoy %>" value="<%= labor.fecha %>" required>
+
+    <label for="hora">Hora de inicio</label>
+    <input id="hora" name="hora" type="time" value="<%= labor.hora %>" required>
+
+    <% if (!editando) { %>
+      <%- include('../../../partials/cuadrilla', { empleados: empleados, seleccionados: labor.empleados }) %>
+      <p class="formulario__ayuda">
+        Selecciona al menos un empleado. Cada persona asignada recibirá una notificación.
+      </p>
+    <% } else { %>
+      <p class="formulario__ayuda">Si cambias la fecha u hora, se notificará a la cuadrilla.</p>
+    <% } %>
+
+    <div class="formulario__acciones">
+      <button type="submit" class="boton boton--grande"><%= editando ? 'Guardar' : 'Programar labor' %></button>
+      <a class="boton boton--grande boton--secundario"
+         href="<%= editando ? '/admin/labores/' + labor.id : '/admin/labores' %>">Cancelar</a>
+    </div>
+  </form>
+  <% } %>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

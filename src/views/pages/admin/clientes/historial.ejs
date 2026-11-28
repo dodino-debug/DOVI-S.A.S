@@ -1,0 +1,64 @@
+<%- include('../../../partials/admin-inicio', { titulo: 'Historial: ' + cliente.nombre, activo: 'clientes' }) %>
+
+<section class="encabezado">
+  <h1>Historial de Servicios</h1>
+  <p>
+    Cliente: <strong><%= cliente.nombre %></strong> ·
+    <a class="enlace-volver" href="/admin/clientes/<%= cliente.id %>">← Volver al cliente</a>
+  </p>
+</section>
+
+<form class="filtros" method="GET" action="/admin/clientes/<%= cliente.id %>/historial">
+  <label>Desde <input type="date" name="desde" value="<%= filtros.desde %>"></label>
+  <label>Hasta <input type="date" name="hasta" value="<%= filtros.hasta %>"></label>
+  <label>Servicio
+    <select name="servicio">
+      <option value="">Todos</option>
+      <% servicios.forEach(function (s) { %>
+        <option value="<%= s.id %>"<%- Number(filtros.servicio) === s.id ? ' selected' : '' %>><%= s.nombre %></option>
+      <% }) %>
+    </select>
+  </label>
+  <button type="submit" class="boton boton--secundario">Filtrar</button>
+  <% if (filtros.desde || filtros.hasta || filtros.servicio) { %>
+    <a class="boton boton--secundario" href="/admin/clientes/<%= cliente.id %>/historial">Limpiar</a>
+  <% } %>
+</form>
+
+<% if (error) { %><p class="flash flash--error" role="alert" style="margin-top: 20px;"><%= error %></p><% } %>
+
+<section class="tarjeta">
+  <div class="tabla-scroll">
+    <table style="min-width: 960px;">
+      <colgroup>
+        <col style="width: 11%"><col style="width: 7%"><col style="width: 17%"><col style="width: 19%">
+        <col style="width: 23%"><col style="width: 23%">
+      </colgroup>
+      <thead>
+        <tr><th>Fecha</th><th>Hora</th><th>Predio</th><th>Labor</th><th>Personal a cargo</th><th>Observaciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (filas.length === 0) { %>
+          <tr><td class="vacio" colspan="6">Este cliente aún no tiene servicios completados con ese filtro.</td></tr>
+        <% } else { filas.forEach(function (f) { %>
+          <tr>
+            <td><%= f.fecha %></td>
+            <td><%= f.hora %></td>
+            <td><%= f.predio %></td>
+            <td class="cliente"><%= f.servicio %></td>
+            <td><%= f.cuadrilla %></td>
+            <td><%= f.observaciones || '—' %></td>
+          </tr>
+        <% }); } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="tarjeta__nota">
+    <span>
+      <% if (truncado) { %>Se muestran los primeros <%= limite %> servicios; acota el filtro para ver el resto.<% }
+         else { %>Solo se listan las labores completadas.<% } %>
+    </span>
+  </div>
+</section>
+
+<%- include('../../../partials/admin-fin') %>

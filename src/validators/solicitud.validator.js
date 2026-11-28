@@ -1,4 +1,28 @@
 const { body } = require('express-validator');
+const { esFecha, hoyBogota } = require('../utils/fechas');
+
+const nota = () =>
+  body('nota', 'La nota no puede superar los 255 caracteres.')
+    .optional({ values: 'falsy' })
+    .isString()
+    .trim()
+    .isLength({ max: 255 });
+
+const validarAprobar = [nota()];
+
+const validarRechazar = [
+  body('nota', 'Escribe el motivo del rechazo (3 a 255 caracteres).')
+    .isString()
+    .trim()
+    .isLength({ min: 3, max: 255 })
+];
+
+const validarReagendar = [
+  body('fecha', 'Indica una nueva fecha válida que no sea anterior a hoy.').custom(
+    (valor) => esFecha(valor) && valor >= hoyBogota()
+  ),
+  nota()
+];
 
 const validarFecha = body('fecha', 'Selecciona una fecha válida que no haya pasado.')
   .isString().bail().matches(/^\d{4}-\d{2}-\d{2}$/).bail()
@@ -26,7 +50,5 @@ function fechaMinima() {
   return formatoBogota.format(new Date());
 }
 
-const validarRechazo = body('motivo', 'Ingresa un motivo de rechazo de 1 a 255 caracteres.')
-  .isString().bail().trim().isLength({ min: 1, max: 255 });
 
-module.exports = { validarSolicitud, validarRechazo, validarFecha, fechaMinima };
+module.exports = { validarSolicitud, fechaMinima,  validarAprobar, validarRechazar, validarReagendar };
